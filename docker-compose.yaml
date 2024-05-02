@@ -3,7 +3,7 @@ services:
   postgres:
     image: postgres:latest
     environment:
-      POSTGRES_DB: mydatabase
+      POSTGRES_DB: oims
       POSTGRES_USER: myuser
       POSTGRES_PASSWORD: mypassword
     ports:
