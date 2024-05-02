@@ -1,6 +1,6 @@
 package com.ceng316.ceng316_oims_backend.IztechUser;
 
-import com.ceng316.ceng316_oims_backend.User.User;
+import com.ceng316.ceng316_oims_backend.User.Role;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,6 +9,6 @@ import java.util.List;
 public class IztechUserService {
     public List<IztechUser> getStudents() {
         return (List.of(new IztechUser("ewe",
-                "şşş", User.Role.COMPANY,"xxd")));
+                "şşş", Role.COMPANY,"xxd")));
     }
 }

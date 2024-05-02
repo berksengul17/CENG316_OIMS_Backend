@@ -1,5 +1,6 @@
 package com.ceng316.ceng316_oims_backend.IztechUser;
 
+import com.ceng316.ceng316_oims_backend.User.Role;
 import com.ceng316.ceng316_oims_backend.User.User;
 
 public class IztechUser extends User{

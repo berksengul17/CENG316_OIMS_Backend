@@ -1,6 +1,7 @@
 package com.ceng316.ceng316_oims_backend.Student;
 
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
+import com.ceng316.ceng316_oims_backend.User.Role;
 
 public class Student extends IztechUser {
     private Integer id;

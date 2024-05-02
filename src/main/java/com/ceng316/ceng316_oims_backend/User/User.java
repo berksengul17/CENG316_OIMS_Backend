@@ -2,14 +2,6 @@ package com.ceng316.ceng316_oims_backend.User;
 
 public class User {
 
-    public enum Role{
-        DEPARTMENT_SECRETARY,
-        SYSTEM_ADMIN,
-        COMPANY,
-        STUDENT,
-        SUMMER_PRACTICE_COORDINATOR
-    }
-
     private String email;
     private String password;
     private Role role;

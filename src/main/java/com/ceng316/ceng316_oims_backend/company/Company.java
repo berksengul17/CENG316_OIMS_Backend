@@ -1,13 +1,10 @@
 package com.ceng316.ceng316_oims_backend.company;
 
+import com.ceng316.ceng316_oims_backend.User.Role;
 import com.ceng316.ceng316_oims_backend.User.User;
 
-enum RegistrationStatus {
-    PENDING,
-    REJECTED,
-    APPROVED
-}
 public class Company extends User {
+
     private String companyName;
     private Integer contactNumber;
     private RegistrationStatus registrationStatus;
