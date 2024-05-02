@@ -8,6 +8,7 @@ public class Ceng316OimsBackendApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(Ceng316OimsBackendApplication.class, args);
+		System.out.println("Hello Worlds");
 	}
 
 }
