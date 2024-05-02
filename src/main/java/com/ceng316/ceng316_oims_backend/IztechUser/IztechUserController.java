@@ -1,4 +1,4 @@
-package com.example.demo.IztechUser;
+package com.ceng316.ceng316_oims_backend.IztechUser;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;

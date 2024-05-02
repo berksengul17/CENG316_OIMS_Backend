@@ -1,6 +1,6 @@
-package com.example.demo.company;
+package com.ceng316.ceng316_oims_backend.company;
 
-import com.example.demo.User.User;
+import com.ceng316.ceng316_oims_backend.User.User;
 
 enum RegistrationStatus {
     PENDING,
@@ -15,7 +15,7 @@ public class Company extends User {
     public Company() {
     }
 
-    public Company(String mail, String password, String role, String companyName, Integer contactNumber) {
+    public Company(String mail, String password, Role role, String companyName, Integer contactNumber) {
         super(mail, password, role);
         this.companyName = companyName;
         this.contactNumber = contactNumber;

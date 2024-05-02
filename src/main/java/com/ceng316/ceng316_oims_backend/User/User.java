@@ -1,16 +1,24 @@
-package com.example.demo.User;
+package com.ceng316.ceng316_oims_backend.User;
 
 public class User {
 
+    public enum Role{
+        DEPARTMENT_SECRETARY,
+        SYSTEM_ADMIN,
+        COMPANY,
+        STUDENT,
+        SUMMER_PRACTICE_COORDINATOR
+    }
+
     private String email;
     private String password;
-    private String role;
+    private Role role;
 
     public User() {
 
     }
 
-    public User(String mail, String password, String role) {
+    public User(String mail, String password, Role role) {
         this.email = mail;
         this.password = password;
         this.role = role;
@@ -32,11 +40,11 @@ public class User {
         this.password = password;
     }
 
-    public String getRole() {
+    public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(Role role) {
         this.role = role;
     }
 }
