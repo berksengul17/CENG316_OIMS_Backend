@@ -1,0 +1,9 @@
+services:
+  postgres:
+    image: 'postgres:latest'
+    restart: always
+    environment:
+      - 'POSTGRES_DB=oims'
+      - 'POSTGRES_PASSWORD=secret'
+    ports:
+      - '5432:5432'
