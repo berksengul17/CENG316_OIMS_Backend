@@ -1,42 +1,24 @@
 package com.ceng316.ceng316_oims_backend.User;
 
+import jakarta.persistence.*;
+import lombok.*;
+
+@Entity
+@Data
+@NoArgsConstructor
+@Table(name = "users")
 public class User {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
     private String email;
     private String password;
     private Role role;
 
-    public User() {
-
-    }
-
     public User(String mail, String password, Role role) {
         this.email = mail;
         this.password = password;
-        this.role = role;
-    }
-
-    public String getMail() {
-        return email;
-    }
-
-    public void setMail(String mail) {
-        this.email = mail;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Role getRole() {
-        return role;
-    }
-
-    public void setRole(Role role) {
         this.role = role;
     }
 }
