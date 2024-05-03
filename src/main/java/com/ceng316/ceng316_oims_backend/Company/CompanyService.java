@@ -3,7 +3,6 @@ package com.ceng316.ceng316_oims_backend.Company;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -19,6 +18,7 @@ public class CompanyService {
             throw new IllegalArgumentException("Email is already taken");
         }
 
+        company.setRegistrationStatus(RegistrationStatus.PENDING);
         return companyRepository.save(company);
     }
 

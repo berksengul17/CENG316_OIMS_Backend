@@ -11,14 +11,21 @@ import java.sql.Blob;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-
 public class Document {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long documentId;
-    private Blob content;
+    @Lob // Indicates that this field should be treated as a Large Object
+    @Basic(fetch = FetchType.LAZY) // Large objects can be lazily fetched
+    private byte[] content; // Use byte array to store the Blob data
     @Enumerated(EnumType.STRING)
     private DocumentType type;
     @Enumerated(EnumType.STRING)
     private DocumentStatus status;
+
+    public Document(byte[] content, DocumentType type, DocumentStatus status) {
+        this.content = content;
+        this.type = type;
+        this.status = status;
+    }
 }

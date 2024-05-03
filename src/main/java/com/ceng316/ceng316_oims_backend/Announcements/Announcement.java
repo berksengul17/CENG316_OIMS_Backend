@@ -1,5 +1,6 @@
 package com.ceng316.ceng316_oims_backend.Announcements;
 
+import com.ceng316.ceng316_oims_backend.Documents.Document;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +20,14 @@ public class Announcement {
     private String title;
     private LocalDate publishDate;
     private LocalDate deadline;
-    @Enumerated(EnumType.STRING)
-    private AnnouncementStatus status;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "document_id", referencedColumnName = "documentId")
+    private Document document;
+
+    public Announcement(String title, LocalDate publishDate, LocalDate deadline, Document document) {
+        this.title = title;
+        this.publishDate = publishDate;
+        this.deadline = deadline;
+        this.document = document;
+    }
 }
