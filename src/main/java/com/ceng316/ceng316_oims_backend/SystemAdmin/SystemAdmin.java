@@ -1,4 +1,4 @@
-package com.ceng316.ceng316_oims_backend.Student;
+package com.ceng316.ceng316_oims_backend.SystemAdmin;
 
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import jakarta.persistence.Entity;
@@ -11,7 +11,8 @@ import lombok.EqualsAndHashCode;
 @Entity
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class Student extends IztechUser {
+public class SystemAdmin extends IztechUser {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

@@ -1,25 +1,10 @@
 package com.ceng316.ceng316_oims_backend.IztechUser;
 
-import com.ceng316.ceng316_oims_backend.User.Role;
-import com.ceng316.ceng316_oims_backend.User.User;
+import com.ceng316.ceng316_oims_backend.Role;
+import jakarta.persistence.*;
+import lombok.Data;
 
-public class IztechUser extends User{
-
+@Data
+public class IztechUser{
     private String fullName;
-
-    public IztechUser() {
-    }
-
-    public IztechUser(String mail, String password, Role role, String fullName) {
-        super(mail, password, role);
-        this.fullName = fullName;
-    }
-
-    public String getFullName() {
-        return fullName;
-    }
-
-    public void setFullName(String fullName) {
-        this.fullName = fullName;
-    }
 }
