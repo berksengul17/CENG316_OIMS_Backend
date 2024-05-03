@@ -16,7 +16,6 @@ public class Document {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long documentId;
-    private String title;
     private Blob content;
     @Enumerated(EnumType.STRING)
     private DocumentType type;
