@@ -26,4 +26,10 @@ public class Company {
         this.contactNumber = contactNumber;
         this.registrationStatus = RegistrationStatus.PENDING;
     }
+
+    public Company(String email, String companyName, Integer contactNumber) {
+        this.email = email;
+        this.companyName = companyName;
+        this.contactNumber = contactNumber;
+    }
 }
