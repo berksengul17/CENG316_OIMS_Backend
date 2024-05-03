@@ -1,9 +1,6 @@
 package com.ceng316.ceng316_oims_backend.Announcements;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -22,5 +19,6 @@ public class Announcement {
     private String title;
     private LocalDate publishDate;
     private LocalDate deadline;
+    @Enumerated(EnumType.STRING)
     private AnnouncementStatus status;
 }

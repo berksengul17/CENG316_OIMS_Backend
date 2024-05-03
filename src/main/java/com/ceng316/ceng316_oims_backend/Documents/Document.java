@@ -1,9 +1,6 @@
 package com.ceng316.ceng316_oims_backend.Documents;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -21,6 +18,8 @@ public class Document {
     private Long documentId;
     private String title;
     private Blob content;
+    @Enumerated(EnumType.STRING)
     private DocumentType type;
+    @Enumerated(EnumType.STRING)
     private DocumentStatus status;
 }
