@@ -23,6 +23,7 @@ public class AnnouncementService {
                                            LocalDate publishDate, LocalDate deadline) throws IOException {
         Document document = new Document(
                 file.getBytes(),
+                file.getContentType(),
                 DocumentType.ANNOUNCEMENT,
                 DocumentStatus.PENDING
         );
@@ -30,5 +31,10 @@ public class AnnouncementService {
         Announcement announcement = new Announcement(title, publishDate, deadline, document);
         documentRepository.save(document);
         return announcementRepository.save(announcement);
+    }
+
+    public Announcement getAnnouncement(String id) {
+        return announcementRepository.findById(Long.parseLong(id))
+                .orElseThrow(() -> new IllegalArgumentException("Announcement not found"));
     }
 }

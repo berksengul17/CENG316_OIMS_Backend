@@ -1,6 +1,5 @@
 package com.ceng316.ceng316_oims_backend.Documents;
 
-import com.ceng316.ceng316_oims_backend.Announcements.Announcement;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
