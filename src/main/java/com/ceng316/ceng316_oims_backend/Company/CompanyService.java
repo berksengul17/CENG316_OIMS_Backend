@@ -33,4 +33,19 @@ public class CompanyService {
         return null;
     }
 
+    public Company approveCompany(Long id) {
+        Company company = companyRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Company not found"));
+
+        company.setRegistrationStatus(RegistrationStatus.APPROVED);
+        return companyRepository.save(company);
+    }
+
+    public Company disapproveCompany (Long id) {
+        Company company = companyRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Company not found"));
+
+        company.setRegistrationStatus(RegistrationStatus.DISAPPROVED);
+        return companyRepository.save(company);
+    }
 }
