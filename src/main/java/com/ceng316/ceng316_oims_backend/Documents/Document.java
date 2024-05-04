@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.util.MimeType;
 
 import java.sql.Blob;
 
@@ -18,13 +19,15 @@ public class Document {
     @Lob // Indicates that this field should be treated as a Large Object
     @Basic(fetch = FetchType.LAZY) // Large objects can be lazily fetched
     private byte[] content; // Use byte array to store the Blob data
+    private String contentType;
     @Enumerated(EnumType.STRING)
     private DocumentType type;
     @Enumerated(EnumType.STRING)
     private DocumentStatus status;
 
-    public Document(byte[] content, DocumentType type, DocumentStatus status) {
+    public Document(byte[] content, String contentType, DocumentType type, DocumentStatus status) {
         this.content = content;
+        this.contentType = contentType;
         this.type = type;
         this.status = status;
     }

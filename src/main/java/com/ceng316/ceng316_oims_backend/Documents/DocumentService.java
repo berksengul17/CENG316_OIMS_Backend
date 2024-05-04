@@ -22,7 +22,7 @@ public class DocumentService{
         Document document = documentRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Document not found"));
 
-        document.setStatus(DocumentStatus.REJECTED);
+        document.setStatus(DocumentStatus.DISAPPROVED);
         return documentRepository.save(document);
     }
 }
