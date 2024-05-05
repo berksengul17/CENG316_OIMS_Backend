@@ -56,5 +56,13 @@ public class CompanyService {
         company.setPassword(request);
         companyRepository.save(company);
     }
+
+    public Company findUserByEmail(String userEmail) {
+        return companyRepository.findByEmail(userEmail)
+                .orElseThrow(() -> new IllegalArgumentException("Company not found"));
+    }
+
+    public void createPasswordResetTokenForCompany(Company company, String token) {
+    }
 }
 
