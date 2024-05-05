@@ -1,5 +1,6 @@
 package com.ceng316.ceng316_oims_backend.Company;
 
+import com.ceng316.ceng316_oims_backend.PasswordResetToken.PasswordResetTokenRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +11,7 @@ import java.util.Optional;
 public class CompanyService {
 
     private final CompanyRepository companyRepository;
+    private final PasswordResetTokenRepository passwordResetTokenRepository;
 
     public Company signUp(Company company) {
         boolean isEmailTaken = companyRepository.findByEmail(company.getEmail()).isPresent();
@@ -64,5 +66,13 @@ public class CompanyService {
 
     public void createPasswordResetTokenForCompany(Company company, String token) {
     }
+    public void changeCompanyPassword(Company company, String password) {
+        company.setPassword(password);
+        companyRepository.save(company);
+    }
+    public Optional<Company> getCompanyByPasswordResetToken(String token) {
+        return Optional.ofNullable(passwordResetTokenRepository.findByToken(token).getCompany());
+    }
+
 }
 
