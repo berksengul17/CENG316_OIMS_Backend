@@ -20,7 +20,7 @@ public class AnnouncementService {
 
     @Transactional
     public Announcement createAnnouncement(String title, MultipartFile file,
-                                           LocalDate publishDate, LocalDate deadline) throws IOException {
+                                           LocalDate deadline) throws IOException {
         Document document = new Document(
                 file.getBytes(),
                 file.getContentType(),
@@ -28,7 +28,7 @@ public class AnnouncementService {
                 DocumentStatus.PENDING
         );
 
-        Announcement announcement = new Announcement(title, publishDate, deadline, document);
+        Announcement announcement = new Announcement(title, deadline, document);
         documentRepository.save(document);
         return announcementRepository.save(announcement);
     }

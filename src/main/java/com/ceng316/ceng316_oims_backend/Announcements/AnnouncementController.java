@@ -25,7 +25,7 @@ public class AnnouncementController {
                                                      @RequestParam("publishDate") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate publishDate,
                                                      @RequestParam("deadline") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate deadline) {
         try {
-            Announcement announcement = announcementService.createAnnouncement(title, file, publishDate, deadline);
+            Announcement announcement = announcementService.createAnnouncement(title, file, deadline);
             return ResponseEntity.ok("Announcement with ID " + announcement.getAnnouncementId() + " created successfully.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());

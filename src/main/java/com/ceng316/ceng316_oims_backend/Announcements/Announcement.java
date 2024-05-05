@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 
 @Entity
 @Data
@@ -24,9 +25,9 @@ public class Announcement {
     @JoinColumn(name = "document_id", referencedColumnName = "documentId")
     private Document document;
 
-    public Announcement(String title, LocalDate publishDate, LocalDate deadline, Document document) {
+    public Announcement(String title, LocalDate deadline, Document document) {
         this.title = title;
-        this.publishDate = publishDate;
+        this.publishDate = LocalDate.now(ZoneId.of("America/New_York"));
         this.deadline = deadline;
         this.document = document;
     }

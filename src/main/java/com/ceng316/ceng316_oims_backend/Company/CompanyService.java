@@ -48,4 +48,13 @@ public class CompanyService {
         company.setRegistrationStatus(RegistrationStatus.DISAPPROVED);
         return companyRepository.save(company);
     }
+
+    public void resetPassword(Long id, String request) {
+        Company company = companyRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Company not found"));
+
+        company.setPassword(request);
+        companyRepository.save(company);
+    }
 }
+
