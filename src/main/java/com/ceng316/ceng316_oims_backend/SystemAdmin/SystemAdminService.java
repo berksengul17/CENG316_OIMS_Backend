@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 @AllArgsConstructor
 public class SystemAdminService {
 
-    private final SystemAdminRepository systemAdminRepository;
     private final DocumentService documentService;
     private final CompanyService companyService;
 

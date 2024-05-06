@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
+import java.util.List;
 
 @RestController
 @RequestMapping("/announcements")
@@ -40,5 +41,10 @@ public class AnnouncementController {
                 .contentType(MediaType.parseMediaType(announcement.getDocument().getContentType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + announcement.getTitle() + "\"")
                 .body(announcement.getDocument().getContent());
+    }
+
+    @GetMapping("/list")
+    public ResponseEntity<List<Announcement>> listAnnouncements() {
+        return ResponseEntity.ok(announcementService.getAnnouncements());
     }
 }

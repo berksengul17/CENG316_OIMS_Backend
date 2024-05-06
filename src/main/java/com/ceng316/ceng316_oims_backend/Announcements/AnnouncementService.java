@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.List;
 
 @Service
 @AllArgsConstructor
@@ -36,5 +37,9 @@ public class AnnouncementService {
     public Announcement getAnnouncement(String id) {
         return announcementRepository.findById(Long.parseLong(id))
                 .orElseThrow(() -> new IllegalArgumentException("Announcement not found"));
+    }
+
+    public List<Announcement> getAnnouncements() {
+        return announcementRepository.findAll();
     }
 }
