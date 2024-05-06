@@ -1,5 +1,6 @@
 package com.ceng316.ceng316_oims_backend.Company;
 
+import com.ceng316.ceng316_oims_backend.PasswordResetToken.PasswordResetToken;
 import com.ceng316.ceng316_oims_backend.PasswordResetToken.PasswordResetTokenRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -65,6 +66,7 @@ public class CompanyService {
     }
 
     public void createPasswordResetTokenForCompany(Company company, String token) {
+        passwordResetTokenRepository.save(new PasswordResetToken(token, company));
     }
     public void changeCompanyPassword(Company company, String password) {
         company.setPassword(password);
