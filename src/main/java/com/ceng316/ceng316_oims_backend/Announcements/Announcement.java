@@ -27,7 +27,7 @@ public class Announcement {
 
     public Announcement(String title, LocalDate deadline, Document document) {
         this.title = title;
-        this.publishDate = LocalDate.now(ZoneId.of("America/New_York"));
+        this.publishDate = LocalDate.now(ZoneId.of("Europe/Istanbul"));
         this.deadline = deadline;
         this.document = document;
     }
