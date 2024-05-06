@@ -42,17 +42,6 @@ public class CompanyController {
         }
     }
 
-    @PostMapping("/{id}/resetpassword")
-    public ResponseEntity<String> resetPassword(@RequestBody String request, @PathVariable Long id) {
-        try {
-            companyService.resetPassword(id, request);
-            return ResponseEntity.ok("Password changed successfully");
-        } catch(IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(e.getMessage());
-        }
-    }
-
     @PostMapping("/resetPassword")
     public ResponseEntity<String> resetPassword(HttpServletRequest request,
                                          @RequestParam String email) {
@@ -68,7 +57,7 @@ public class CompanyController {
 
     private SimpleMailMessage constructResetTokenEmail(
             String contextPath, String token, Company company) {
-        String url = contextPath + "/user/changePassword?token=" + token;
+        String url = contextPath + "/security/company/changePassword?token=" + token;
         return constructEmail("Reset Password", "Reset password \r\n" + url, company);
     }
 

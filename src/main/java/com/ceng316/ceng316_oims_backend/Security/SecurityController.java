@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 import java.util.Optional;
 
@@ -19,8 +20,8 @@ public class SecurityController {
     private final SecurityService securityService;
     private final CompanyService companyService;
 
-    @GetMapping("/user/changePassword")
-    public ResponseEntity<?> showChangePasswordPage(Model model,
+    @GetMapping("/company/changePassword")
+    public RedirectView showChangePasswordPage(Model model,
                                                     @RequestParam("token") String token) {
 
         String result = securityService.validatePasswordResetToken(token);
@@ -40,14 +41,14 @@ public class SecurityController {
                 case "invalidToken":
                     message = "Invalid token.";
             }
-            return ResponseEntity.ok("redirect:/login.html?message=" + message);
+            return new RedirectView("http://localhost:3000/reset-password");
         } else {
             model.addAttribute("token", token);
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("redirect:/updatePassword.html");
+            return new RedirectView("http://localhost:3000/set-new-password");
         }
     }
 
-    @PostMapping("/user/savePassword")
+    @PostMapping("/company/savePassword")
     public ResponseEntity<?> savePassword(@Valid PasswordDto passwordDto) {
 
         String result = securityService.validatePasswordResetToken(passwordDto.getToken());
