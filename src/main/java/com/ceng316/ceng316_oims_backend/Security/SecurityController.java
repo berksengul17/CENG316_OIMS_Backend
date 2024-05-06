@@ -40,8 +40,7 @@ public class SecurityController {
                 case "invalidToken":
                     message = "Invalid token.";
             }
-            return ResponseEntity.ok("redirect:/login.html?"
-                    + "message=" + message);
+            return ResponseEntity.ok("redirect:/login.html?message=" + message);
         } else {
             model.addAttribute("token", token);
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("redirect:/updatePassword.html");
