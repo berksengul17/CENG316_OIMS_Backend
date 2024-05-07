@@ -21,6 +21,7 @@ public interface AnnouncementRepository extends JpaRepository<Announcement, Long
 //    @Transactional
 //    List<Announcement> findByCompanyIdAndDocumentStatus(Long companyId, DocumentStatus status);
 
+    @Transactional
     List<Announcement> findByCompanyId(Long companyId);
 }
 

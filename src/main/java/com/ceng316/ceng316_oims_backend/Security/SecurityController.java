@@ -41,10 +41,10 @@ public class SecurityController {
                 case "invalidToken":
                     message = "Invalid token.";
             }
-            return new RedirectView("http://localhost:3000/reset-password");
+            return new RedirectView("http://localhost:3000/company/resetpassword");
         } else {
             model.addAttribute("token", token);
-            return new RedirectView("http://localhost:3000/set-new-password");
+            return new RedirectView("http://localhost:3000/company/setnewpassword");
         }
     }
 

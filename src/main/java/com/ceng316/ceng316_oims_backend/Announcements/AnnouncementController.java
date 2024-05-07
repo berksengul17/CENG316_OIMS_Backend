@@ -26,6 +26,14 @@ public class AnnouncementController {
                                                      @RequestParam("deadline") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate deadline,
                                                      @RequestParam("companyId") Long companyId) {
         try {
+            if (title.length() < 3 || title.length() > 30) {
+                return ResponseEntity.badRequest().body("Title must be between 3 and 50 characters.");
+            } else if (!file.getContentType().equals("application/pdf")) {
+                return ResponseEntity.badRequest().body("File must be a PDF.");
+            } else if (deadline.isBefore(LocalDate.now())) {
+                return ResponseEntity.badRequest().body("Deadline can't be before the current date.");
+            }
+
             Announcement announcement = announcementService.createAnnouncement(title, file, deadline, companyId);
             return ResponseEntity.ok("Announcement with ID " + announcement.getAnnouncementId() + " created successfully.");
         } catch (Exception e) {
