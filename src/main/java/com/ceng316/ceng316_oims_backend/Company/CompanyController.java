@@ -1,5 +1,8 @@
 package com.ceng316.ceng316_oims_backend.Company;
 
+import com.ceng316.ceng316_oims_backend.Announcements.Announcement;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.OneToMany;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.core.env.Environment;
@@ -9,6 +12,7 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.UUID;
 
 @RestController
@@ -19,6 +23,8 @@ public class CompanyController {
     private final CompanyService companyService;
     private final JavaMailSender mailSender;
     private final Environment env;
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Announcement> announcements;
 
     @PostMapping("/signUp")
     public ResponseEntity<String> signUp(@RequestBody Company request) {
@@ -74,4 +80,9 @@ public class CompanyController {
     private String getAppUrl(HttpServletRequest request) {
         return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
     }
+    @GetMapping("/list")
+    public ResponseEntity<List<Company>> listCompanies() {
+        return ResponseEntity.ok(companyService.getCompanies());
+    }
 }
+

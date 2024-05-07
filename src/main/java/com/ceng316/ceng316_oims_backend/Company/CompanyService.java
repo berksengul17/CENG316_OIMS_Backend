@@ -5,6 +5,7 @@ import com.ceng316.ceng316_oims_backend.PasswordResetToken.PasswordResetTokenRep
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -30,7 +31,7 @@ public class CompanyService {
 
         if (company.isPresent() && company.get().getPassword().equals(companyCredentials.getPassword())) {
             Company companyInfo = company.get();
-            return new Company(companyInfo.getEmail(), companyInfo.getCompanyName(), companyInfo.getContactNumber());
+            return new Company(companyInfo.getEmail(), companyInfo.getCompanyName());
         }
 
         return null;
@@ -76,5 +77,10 @@ public class CompanyService {
         return Optional.ofNullable(passwordResetTokenRepository.findByToken(token).getCompany());
     }
 
+    public List<Company> getCompanies() {
+        return companyRepository.findByRegistrationStatus(RegistrationStatus.PENDING);
+    }
 }
+
+
 

@@ -15,21 +15,19 @@ public class Company {
     private String email;
     private String password;
     private String companyName;
-    private Integer contactNumber;
     @Enumerated(EnumType.STRING)
     private RegistrationStatus registrationStatus;
 
-    public Company(String email, String password, String companyName, Integer contactNumber) {
+    public Company(String email, String password, String companyName) {
         this.email = email;
         this.password = password;
         this.companyName = companyName;
-        this.contactNumber = contactNumber;
         this.registrationStatus = RegistrationStatus.PENDING;
     }
 
-    public Company(String email, String companyName, Integer contactNumber) {
+    public Company(String email, String companyName) {
         this.email = email;
         this.companyName = companyName;
-        this.contactNumber = contactNumber;
+
     }
 }
