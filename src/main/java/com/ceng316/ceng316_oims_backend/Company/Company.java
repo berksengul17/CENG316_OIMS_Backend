@@ -42,4 +42,11 @@ public class Company {
         this.companyName = companyName;
 
     }
+
+    public Company(Long id, String email, String companyName, RegistrationStatus registrationStatus) {
+        this.id = id;
+        this.email = email;
+        this.companyName = companyName;
+        this.registrationStatus = registrationStatus;
+    }
 }

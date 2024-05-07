@@ -21,8 +21,7 @@ public class SecurityController {
     private final CompanyService companyService;
 
     @GetMapping("/company/changePassword")
-    public RedirectView showChangePasswordPage(Model model,
-                                                    @RequestParam("token") String token) {
+    public RedirectView showChangePasswordPage(@RequestParam("token") String token) {
 
         String result = securityService.validatePasswordResetToken(token);
 
@@ -43,8 +42,7 @@ public class SecurityController {
             }
             return new RedirectView("http://localhost:3000/company/resetpassword");
         } else {
-            model.addAttribute("token", token);
-            return new RedirectView("http://localhost:3000/company/setnewpassword");
+            return new RedirectView("http://localhost:3000/company/setnewpassword?token=" + token);
         }
     }
 

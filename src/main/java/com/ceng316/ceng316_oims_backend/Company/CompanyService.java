@@ -31,7 +31,7 @@ public class CompanyService {
 
         if (company.isPresent() && company.get().getPassword().equals(companyCredentials.getPassword())) {
             Company companyInfo = company.get();
-            return new Company(companyInfo.getId(), companyInfo.getEmail(), companyInfo.getCompanyName());
+            return new Company(companyInfo.getId(), companyInfo.getEmail(), companyInfo.getCompanyName(), companyInfo.getRegistrationStatus());
         }
 
         return null;
