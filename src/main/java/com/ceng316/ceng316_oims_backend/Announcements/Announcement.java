@@ -1,5 +1,6 @@
 package com.ceng316.ceng316_oims_backend.Announcements;
 
+import com.ceng316.ceng316_oims_backend.Company.Company;
 import com.ceng316.ceng316_oims_backend.Documents.Document;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -24,7 +25,9 @@ public class Announcement {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "document_id", referencedColumnName = "documentId")
     private Document document;
-
+    @ManyToOne
+    @JoinColumn(name = "company_id", referencedColumnName = "id") // This is the foreign key column in the Announcement table.
+    private Company company;
     public Announcement(String title, LocalDate deadline, Document document) {
         this.title = title;
         this.publishDate = LocalDate.now(ZoneId.of("Europe/Istanbul"));
