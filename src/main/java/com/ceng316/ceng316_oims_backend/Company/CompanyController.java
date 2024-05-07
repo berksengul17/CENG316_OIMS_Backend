@@ -23,8 +23,6 @@ public class CompanyController {
     private final CompanyService companyService;
     private final JavaMailSender mailSender;
     private final Environment env;
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Announcement> announcements;
 
     @PostMapping("/signUp")
     public ResponseEntity<String> signUp(@RequestBody Company request) {
@@ -61,6 +59,11 @@ public class CompanyController {
         return ResponseEntity.ok("You should receive a password reset email shortly");
     }
 
+    @GetMapping("/list")
+    public ResponseEntity<List<Company>> listCompanies() {
+        return ResponseEntity.ok(companyService.getCompanies());
+    }
+
     private SimpleMailMessage constructResetTokenEmail(
             String contextPath, String token, Company company) {
         String url = contextPath + "/security/company/changePassword?token=" + token;
@@ -80,9 +83,6 @@ public class CompanyController {
     private String getAppUrl(HttpServletRequest request) {
         return "http://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
     }
-    @GetMapping("/list")
-    public ResponseEntity<List<Company>> listCompanies() {
-        return ResponseEntity.ok(companyService.getCompanies());
-    }
+
 }
 

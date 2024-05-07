@@ -1,5 +1,7 @@
 package com.ceng316.ceng316_oims_backend.Announcements;
 
+import com.ceng316.ceng316_oims_backend.Company.Company;
+import com.ceng316.ceng316_oims_backend.Company.CompanyRepository;
 import com.ceng316.ceng316_oims_backend.Documents.Document;
 import com.ceng316.ceng316_oims_backend.Documents.DocumentRepository;
 import com.ceng316.ceng316_oims_backend.Documents.DocumentStatus;
@@ -18,10 +20,11 @@ import java.util.List;
 public class AnnouncementService {
     private final AnnouncementRepository announcementRepository;
     private final DocumentRepository documentRepository;
+    private final CompanyRepository companyRepository;
 
     @Transactional
     public Announcement createAnnouncement(String title, MultipartFile file,
-                                           LocalDate deadline) throws IOException {
+                                           LocalDate deadline, Long companyId) throws IOException {
         Document document = new Document(
                 file.getBytes(),
                 file.getContentType(),
@@ -29,7 +32,10 @@ public class AnnouncementService {
                 DocumentStatus.PENDING
         );
 
-        Announcement announcement = new Announcement(title, deadline, document);
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new IllegalArgumentException("Company not found"));
+
+        Announcement announcement = new Announcement(title, deadline, document, company);
         documentRepository.save(document);
         return announcementRepository.save(announcement);
     }

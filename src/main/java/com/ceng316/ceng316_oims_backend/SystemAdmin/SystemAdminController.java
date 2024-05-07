@@ -36,4 +36,10 @@ public class SystemAdminController {
         return systemAdminService.disapproveCompany(id);
     }
 
+    @PutMapping("/company/{id}/ban")
+    public Company banCompany(@PathVariable Long id) {
+        return systemAdminService.banCompany(id);
+    }
+
+
 }

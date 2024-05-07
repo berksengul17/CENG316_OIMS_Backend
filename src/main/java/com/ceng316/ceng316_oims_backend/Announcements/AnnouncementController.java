@@ -23,9 +23,10 @@ public class AnnouncementController {
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> createAnnouncement(@RequestParam("title") String title,
                                                      @RequestParam("file") MultipartFile file,
-                                                     @RequestParam("deadline") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate deadline) {
+                                                     @RequestParam("deadline") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate deadline,
+                                                     @RequestParam("companyId") Long companyId) {
         try {
-            Announcement announcement = announcementService.createAnnouncement(title, file, deadline);
+            Announcement announcement = announcementService.createAnnouncement(title, file, deadline, companyId);
             return ResponseEntity.ok("Announcement with ID " + announcement.getAnnouncementId() + " created successfully.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());

@@ -31,7 +31,7 @@ public class CompanyService {
 
         if (company.isPresent() && company.get().getPassword().equals(companyCredentials.getPassword())) {
             Company companyInfo = company.get();
-            return new Company(companyInfo.getEmail(), companyInfo.getCompanyName());
+            return new Company(companyInfo.getId(), companyInfo.getEmail(), companyInfo.getCompanyName());
         }
 
         return null;
@@ -50,6 +50,14 @@ public class CompanyService {
                 .orElseThrow(() -> new IllegalArgumentException("Company not found"));
 
         company.setRegistrationStatus(RegistrationStatus.DISAPPROVED);
+        return companyRepository.save(company);
+    }
+
+    public Company banCompany (Long id) {
+        Company company = companyRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Company not found"));
+
+        company.setRegistrationStatus(RegistrationStatus.BANNED);
         return companyRepository.save(company);
     }
 

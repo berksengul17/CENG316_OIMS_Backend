@@ -28,10 +28,11 @@ public class Announcement {
     @ManyToOne
     @JoinColumn(name = "company_id", referencedColumnName = "id") // This is the foreign key column in the Announcement table.
     private Company company;
-    public Announcement(String title, LocalDate deadline, Document document) {
+    public Announcement(String title, LocalDate deadline, Document document, Company company) {
         this.title = title;
         this.publishDate = LocalDate.now(ZoneId.of("Europe/Istanbul"));
         this.deadline = deadline;
         this.document = document;
+        this.company = company;
     }
 }

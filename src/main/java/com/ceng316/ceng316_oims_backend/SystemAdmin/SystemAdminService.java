@@ -30,4 +30,8 @@ public class SystemAdminService {
     public Company disapproveCompany(@PathVariable Long id) {
         return companyService.disapproveCompany(id);
     }
+
+    public Company banCompany(@PathVariable Long id) {
+        return companyService.banCompany(id);
+    }
 }
