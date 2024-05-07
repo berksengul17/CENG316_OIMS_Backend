@@ -1,6 +1,7 @@
 package com.ceng316.ceng316_oims_backend.Company;
 
 import com.ceng316.ceng316_oims_backend.Announcements.Announcement;
+import com.ceng316.ceng316_oims_backend.Feedback.CompanyFeedback.CompanyFeedback;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -24,6 +25,9 @@ public class Company {
     @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<Announcement> announcements;
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<CompanyFeedback> feedbacks;
 
     public Company(String email, String password, String companyName) {
         this.email = email;
