@@ -43,8 +43,13 @@ public class AnnouncementController {
                 .body(announcement.getDocument().getContent());
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<List<Announcement>> listAnnouncements() {
-        return ResponseEntity.ok(announcementService.getAnnouncements());
+    @GetMapping
+    public ResponseEntity<List<Announcement>> getAllAnnouncements() {
+        return ResponseEntity.ok(announcementService.getAllAnnouncements());
+    }
+
+    @GetMapping("/company/{id}")
+    public ResponseEntity<List<Announcement>> getAnnouncementsForCompany(@PathVariable Long id) {
+        return ResponseEntity.ok(announcementService.getAnnouncementsForCompany(id));
     }
 }

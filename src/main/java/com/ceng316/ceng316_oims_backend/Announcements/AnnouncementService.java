@@ -2,6 +2,7 @@ package com.ceng316.ceng316_oims_backend.Announcements;
 
 import com.ceng316.ceng316_oims_backend.Company.Company;
 import com.ceng316.ceng316_oims_backend.Company.CompanyRepository;
+import com.ceng316.ceng316_oims_backend.Company.RegistrationStatus;
 import com.ceng316.ceng316_oims_backend.Documents.Document;
 import com.ceng316.ceng316_oims_backend.Documents.DocumentRepository;
 import com.ceng316.ceng316_oims_backend.Documents.DocumentStatus;
@@ -45,7 +46,12 @@ public class AnnouncementService {
                 .orElseThrow(() -> new IllegalArgumentException("Announcement not found"));
     }
 
-    public List<Announcement> getAnnouncements() {
-        return announcementRepository.findAll();
+    public List<Announcement> getAllAnnouncements() {
+        return announcementRepository.findByDocumentStatus(DocumentStatus.PENDING);
     }
+
+    public List<Announcement> getAnnouncementsForCompany(Long id) {
+        return announcementRepository.findByCompanyId(id);
+    }
+
 }
