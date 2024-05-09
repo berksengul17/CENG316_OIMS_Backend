@@ -4,6 +4,8 @@ import com.ceng316.ceng316_oims_backend.Announcements.Announcement;
 import com.ceng316.ceng316_oims_backend.Feedback.CompanyFeedback.CompanyFeedback;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 

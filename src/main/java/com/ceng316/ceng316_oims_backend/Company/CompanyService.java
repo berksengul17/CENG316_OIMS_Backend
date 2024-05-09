@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.regex.Pattern;
 
 @Service
 @AllArgsConstructor
@@ -20,6 +21,8 @@ public class CompanyService {
 
         if (isEmailTaken) {
             throw new IllegalArgumentException("Email is already taken");
+        } else if (!isValidEmail(company.getEmail())) {
+            throw new IllegalArgumentException("Invalid email address");
         }
 
         company.setRegistrationStatus(RegistrationStatus.PENDING);
@@ -88,7 +91,10 @@ public class CompanyService {
     public List<Company> getCompanies() {
         return companyRepository.findByRegistrationStatus(RegistrationStatus.PENDING);
     }
+
+    private boolean isValidEmail(String emailAddress) {
+        return Pattern.compile("[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}")
+                .matcher(emailAddress)
+                .matches();
+    }
 }
-
-
-
