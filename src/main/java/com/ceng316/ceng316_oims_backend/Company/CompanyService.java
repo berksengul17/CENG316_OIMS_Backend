@@ -23,6 +23,8 @@ public class CompanyService {
             throw new IllegalArgumentException("Email is already taken");
         } else if (!isValidEmail(company.getEmail())) {
             throw new IllegalArgumentException("Invalid email address");
+        } else if (company.getCompanyName().length() > 30 || company.getCompanyName().length() < 2) {
+            throw new IllegalArgumentException("Company name should be between 2 and 30 characters");
         }
 
         company.setRegistrationStatus(RegistrationStatus.PENDING);
@@ -78,6 +80,10 @@ public class CompanyService {
     }
 
     public void createPasswordResetTokenForCompany(Company company, String token) {
+        if (passwordResetTokenRepository.findByCompany(company).isPresent()) {
+            passwordResetTokenRepository.deleteByCompany(company);
+        }
+
         passwordResetTokenRepository.save(new PasswordResetToken(token, company));
     }
     public void changeCompanyPassword(Company company, String password) {
