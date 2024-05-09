@@ -49,4 +49,11 @@ public class Company {
         this.companyName = companyName;
         this.registrationStatus = registrationStatus;
     }
+
+    public Company(String email, String password, String companyName, RegistrationStatus registrationStatus) {
+        this.email = email;
+        this.password = password;
+        this.companyName = companyName;
+        this.registrationStatus = registrationStatus;
+    }
 }

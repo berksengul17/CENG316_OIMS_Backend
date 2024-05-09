@@ -32,4 +32,11 @@ public class IztechUser{
         this.email = email;
         this.role = role;
     }
+
+    public IztechUser(String fullName, String email, String password, Role role) {
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+    }
 }
