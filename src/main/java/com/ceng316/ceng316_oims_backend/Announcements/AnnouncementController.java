@@ -10,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping("/announcements")
@@ -28,7 +29,7 @@ public class AnnouncementController {
         try {
             if (title.length() < 3 || title.length() > 30) {
                 return ResponseEntity.badRequest().body("Title must be between 3 and 50 characters.");
-            } else if (!file.getContentType().equals("application/pdf")) {
+            } else if (!Objects.equals(file.getContentType(), "application/pdf")) {
                 return ResponseEntity.badRequest().body("File must be a PDF.");
             } else if (deadline.isBefore(LocalDate.now())) {
                 return ResponseEntity.badRequest().body("Deadline can't be before the current date.");
