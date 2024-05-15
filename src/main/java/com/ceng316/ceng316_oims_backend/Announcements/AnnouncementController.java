@@ -27,7 +27,7 @@ public class AnnouncementController {
                                                      @RequestParam("deadline") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate deadline,
                                                      @RequestParam("companyId") Long companyId) {
         try {
-            if (title.length() < 3 || title.length() > 50) {
+            if (title.length() < 3 || title.length() > 30) {
                 return ResponseEntity.badRequest().body("Title must be between 3 and 50 characters.");
             } else if (!Objects.equals(file.getContentType(), "application/pdf")) {
                 return ResponseEntity.badRequest().body("File must be a PDF.");
