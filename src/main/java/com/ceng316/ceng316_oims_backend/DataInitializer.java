@@ -20,9 +20,9 @@ public class DataInitializer implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        iztechUserRepository.save(new IztechUser("Admin", "admin@admin.com", "123", Role.SYSTEM_ADMIN));
-        iztechUserRepository.save(new IztechUser("Berk Şengül", "berk@std.iyte.edu.tr", "123", Role.STUDENT));
-        iztechUserRepository.save(new IztechUser("Buket Öksüzoğlu", "buket@iyte.edu.tr", "123", Role.SUMMER_PRACTICE_COORDINATOR));
+        iztechUserRepository.save(new IztechUser("Admin", "admin@admin.com", "123", Role.SYSTEM_ADMIN, "13154178426", "0555 555 55 55"));
+        iztechUserRepository.save(new IztechUser("Berk Şengül", "berk@std.iyte.edu.tr", "123", Role.STUDENT, "13154178426", "0555 555 55 55"));
+        iztechUserRepository.save(new IztechUser("Buket Öksüzoğlu", "buket@iyte.edu.tr", "123", Role.SUMMER_PRACTICE_COORDINATOR, "13154178426", "0555 555 55 55"));
         companyRepository.save(new Company("test_approved@company.com", "123", "Test Company Approved", RegistrationStatus.APPROVED));
         companyRepository.save(new Company("test_pending@company.com", "123", "Test Company Pending", RegistrationStatus.PENDING));
     }

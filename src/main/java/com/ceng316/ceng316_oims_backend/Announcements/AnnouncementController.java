@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -27,16 +28,22 @@ public class AnnouncementController {
                                                      @RequestParam("deadline") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate deadline,
                                                      @RequestParam("companyId") Long companyId) {
         try {
-            if (title.length() < 3 || title.length() > 50) {
-                return ResponseEntity.badRequest().body("Title must be between 3 and 50 characters.");
-            } else if (!Objects.equals(file.getContentType(), "application/pdf")) {
-                return ResponseEntity.badRequest().body("File must be a PDF.");
-            } else if (deadline.isBefore(LocalDate.now())) {
-                return ResponseEntity.badRequest().body("Deadline can't be before the current date.");
-            }
-
             Announcement announcement = announcementService.createAnnouncement(title, file, deadline, companyId);
             return ResponseEntity.ok("Announcement with ID " + announcement.getAnnouncementId() + " created successfully.");
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Can't read file: " + e.getMessage());
+        }
+    }
+
+    @PutMapping("/update/{announcementId}")
+    public ResponseEntity<?> updateAnnouncement(@PathVariable Long announcementId, @RequestParam(value = "title", required = false) String title,
+                                                @RequestParam(value = "file", required = false) MultipartFile file,
+                                                @RequestParam(value = "deadline", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate deadline)  {
+        try {
+            Announcement announcement = announcementService.updateAnnouncement(announcementId, title, file, deadline);
+            return ResponseEntity.ok("Announcement with ID " + announcement.getAnnouncementId() + " is updated successfully.");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
         }
