@@ -31,8 +31,8 @@ public class IztechUser{
     @ToString.Exclude
     private List<IztechUserFeedback> feedbacks;
     private String identityNumber;
-    private Long schoolId;
-    private Integer grade;
+    private String schoolId;
+    private String grade;
     private String contactNumber;
 
 
@@ -50,7 +50,7 @@ public class IztechUser{
 
     public IztechUser(String fullName, String email, String password,
                       Role role, List<IztechUserFeedback> feedbacks,
-                      String identityNumber, Long schoolId, Integer grade,
+                      String identityNumber, String schoolId, String grade,
                       String contactNumber) {
         this.fullName = fullName;
         this.email = email;
@@ -64,7 +64,7 @@ public class IztechUser{
     }
     public IztechUser(Long id, String fullName, String email,
                        Role role,
-                       String identityNumber, Long schoolId, Integer grade,
+                       String identityNumber, String schoolId, String grade,
                        String contactNumber) {
         this.id = id;
         this.fullName = fullName;

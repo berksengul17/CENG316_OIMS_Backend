@@ -1,20 +1,27 @@
 package com.ceng316.ceng316_oims_backend.Documents;
 
 
+import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
+import com.ceng316.ceng316_oims_backend.IztechUser.IztechUserRepository;
 import lombok.AllArgsConstructor;
-import org.apache.poi.xwpf.usermodel.*;
+import org.apache.poi.xwpf.usermodel.XWPFDocument;
+import org.apache.poi.xwpf.usermodel.XWPFParagraph;
+import org.apache.poi.xwpf.usermodel.XWPFRun;
 import org.springframework.stereotype.Service;
 
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 @AllArgsConstructor
 
-public class DocumentService{
+public class DocumentService {
 
     private final DocumentRepository documentRepository;
+    private final IztechUserRepository iztechUserRepository;
 
     public Document approveDocument(Long id) {
         Document document = documentRepository.findById(id)
@@ -32,59 +39,61 @@ public class DocumentService{
         return documentRepository.save(document);
     }
 
-    public void fillTemplateWithStudentData(String templatePath, String outputPath, Student student) throws IOException {
-        try (XWPFDocument doc = new XWPFDocument(new FileInputStream(templatePath))) {
-            for (XWPFTable table : doc.getTables()) {
-                for (XWPFTableRow row : table.getRows()) {
-                    for (XWPFTableCell cell : row.getTableCells()) {
-                        fillCellWithStudentData(cell, student);
+    public void fillDocument(Long userId, DocumentType documentType) throws Exception {
+        IztechUser user = iztechUserRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+        Optional<Document> templateFile = documentRepository.findByDocumentType(documentType);
+
+        if (templateFile.isEmpty()) {
+            throw new IllegalArgumentException("Template document not found");
+        }
+
+        XWPFDocument doc = new XWPFDocument(new FileInputStream(String.valueOf(templateFile)));
+
+        // Create a map for the titles and corresponding user values
+        Map<String, String> replacements = new HashMap<>();
+
+        if (documentType == DocumentType.APPLICATION_LETTER_TEMPLATE) {
+            replacements.put("ADI - SOYADI", user.getFullName());
+            replacements.put("SINIFI", user.getGrade());
+            replacements.put("OKUL NUMARASI", user.getSchoolId());
+            replacements.put("T.C. KİMLİK NO", user.getIdentityNumber());
+            replacements.put("CEP TELEFONU", user.getContactNumber());
+            replacements.put("E-POSTA", user.getEmail());
+        } else if (documentType == DocumentType.APPLICATION_FORM_TEMPLATE) {
+            // Define replacements specific to the application form template
+            replacements.put("ADI - SOYADI", user.getFullName());
+            replacements.put("SINIFI", user.getGrade());
+            replacements.put("OKUL NUMARASI", user.getSchoolId());
+            replacements.put("T.C. KİMLİK NO", user.getIdentityNumber());
+            replacements.put("""
+                    CEP TELEFONU
+
+                    (Kendisinin / Yakınının)""", user.getContactNumber());
+            replacements.put("E-POSTA", user.getEmail());
+        }
+        // Replace placeholders in the document
+        for (XWPFParagraph p : doc.getParagraphs()) {
+            int runsSize = p.getRuns().size();
+            for (int i = 0; i < runsSize; i++) {
+                XWPFRun run = p.getRuns().get(i);
+                String text = run.getText(0);
+                if (text != null && replacements.containsKey(text.trim())) {
+                    if (i + 1 < runsSize) {
+                        XWPFRun nextRun = p.getRuns().get(i + 1);
+                        nextRun.setText(replacements.get(text.trim()), 0);
+                    } else {
+                        // If no run exists after the title, create a new one
+                        XWPFRun newRun = p.createRun();
+                        newRun.setText(replacements.get(text.trim()));
                     }
+                    break; // Break after setting text to avoid overwriting multiple times
                 }
             }
-
-            try (FileOutputStream out = new FileOutputStream(outputPath)) {
-                doc.write(out);
-            }
         }
-    }
 
-    private void fillCellWithStudentData(XWPFTableCell cell, Student student) {
-        String cellText = cell.getText();
-        if (cellText.contains("ADI - SOYADI")) {
-            appendTextToCell(cell, student.getFullName());
-        } else if (cellText.contains("SINIFI")) {
-            appendTextToCell(cell, student.getClassYear());
-        } else if (cellText.contains("OKUL NUMARASI")) {
-            appendTextToCell(cell, student.getSchoolNumber());
-        } else if (cellText.contains("T.C. KİMLİK NO")) {
-            appendTextToCell(cell, student.getNationalId());
-        } else if (cellText.contains("CEP TELEFONU")) {
-            appendTextToCell(cell, student.getPhoneNumber());
-        } else if (cellText.contains("E-POSTA")) {
-            appendTextToCell(cell, student.getEmail());
+        // Save the filled document
+        try (FileOutputStream out = new FileOutputStream("Filled_Document_" + documentType + ".docx")) {
+            doc.write(out);
         }
-    }
-
-    private void appendTextToCell(XWPFTableCell cell, String textToAppend) {
-        XWPFParagraph paragraph;
-        if (cell.getParagraphs().isEmpty()) {
-            paragraph = cell.addParagraph();
-        } else {
-            paragraph = cell.getParagraphs().get(0);
-        }
-        XWPFRun run = paragraph.createRun();
-        run.setText(textToAppend);
-    }
-    public byte[] getDocumentTemplateFromDB() {
-        // Assuming you have a JDBC template or similar setup
-        String sql = "SELECT doc_template FROM templates WHERE id = ?";
-        return jdbcTemplate.queryForObject(sql, new Object[]{templateId}, (ResultSet rs, int rowNum) -> {
-            Blob docBlob = rs.getBlob("doc_template");
-            int blobLength = (int) docBlob.length();
-            byte[] blobAsBytes = docBlob.getBytes(1, blobLength);
-            docBlob.free();
-            return blobAsBytes;
-        });
     }
 }
-
