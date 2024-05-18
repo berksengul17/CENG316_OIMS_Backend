@@ -34,7 +34,7 @@ public class IztechUser{
     private String schoolId;
     private String grade;
     private String contactNumber;
-
+    private Integer isEligible = 0;
 
     public IztechUser(String fullName, String email, String password,
                       Role role,
