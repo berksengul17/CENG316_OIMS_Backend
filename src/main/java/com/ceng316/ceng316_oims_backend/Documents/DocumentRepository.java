@@ -7,5 +7,5 @@ import java.util.Optional;
 
 @Repository
 public interface DocumentRepository extends JpaRepository<Document, Long> {
-    Optional<Document> findByDocumentType(DocumentType documentType);
+    Optional<Document> findByType(DocumentType type);
 }
