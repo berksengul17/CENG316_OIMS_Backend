@@ -62,6 +62,20 @@ public class IztechUser{
         this.grade = grade;
         this.contactNumber = contactNumber;
     }
+    public IztechUser(Long id, String fullName, String email,
+                       Role role,
+                       String identityNumber, Long schoolId, Integer grade,
+                       String contactNumber) {
+        this.id = id;
+        this.fullName = fullName;
+        this.email = email;
+        this.role = role;
+//        this.feedbacks = feedbacks;
+        this.identityNumber = identityNumber;
+        this.schoolId = schoolId;
+        this.grade = grade;
+        this.contactNumber = contactNumber;
+    }
 
     @Override
     public boolean equals(Object o) {
