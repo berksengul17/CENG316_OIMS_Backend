@@ -6,10 +6,13 @@ import com.ceng316.ceng316_oims_backend.Student.StudentService;
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
 import lombok.AllArgsConstructor;
-import org.apache.poi.xwpf.usermodel.XWPFDocument;
-import org.apache.poi.xwpf.usermodel.XWPFParagraph;
-import org.apache.poi.xwpf.usermodel.XWPFRun;
+import org.apache.poi.hwpf.HWPFDocument;
+import org.apache.poi.hwpf.usermodel.*;
+import org.apache.poi.hwpf.usermodel.Paragraph;
+import org.apache.poi.xwpf.usermodel.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
 import java.util.*;
@@ -64,64 +67,69 @@ public class DocumentService {
 
     }
 
+    @Transactional
     public void fillDocument(Long userId, DocumentType documentType) throws Exception {
         IztechUser user = iztechUserRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
-        Optional<Document> templateFile = documentRepository.findByType(documentType);
+        Document templateFile = documentRepository.findByType(documentType)
+                .orElseThrow(() -> new IllegalArgumentException("Template document not found."));
 
-        if (templateFile.isEmpty()) {
-            throw new IllegalArgumentException("Template document not found");
+        InputStream input = new ByteArrayInputStream(templateFile.getContent());
+
+        Map<Integer, String> replacements = new HashMap<>();
+        replacements.put(0, user.getFullName());
+        replacements.put(3, user.getGrade());
+        replacements.put(4, user.getSchoolId());
+        replacements.put(5, user.getIdentityNumber());
+        replacements.put(6, user.getContactNumber());
+        replacements.put(7, user.getEmail());
+
+        if (isOle2Format(templateFile.getContent())) {
+            fillDocTemplate(input, replacements,
+                    "src/main/resources/static/Filled_Document_" + documentType + ".doc");
+        } else {
+            fillDocxTemplate(input, replacements,
+                    "src/main/resources/static/Filled_Document_" + documentType + ".docx");
         }
+    }
 
-        XWPFDocument doc = new XWPFDocument(new FileInputStream(String.valueOf(templateFile)));
+    private boolean isOle2Format(byte[] content) {
+        // Simple check to determine if the content is OLE2 format
+        // OLE2 format files start with specific bytes (D0 CF 11 E0 A1 B1 1A E1)
+        return content.length > 8 && content[0] == (byte) 0xD0 && content[1] == (byte) 0xCF;
+    }
 
-        // Create a map for the titles and corresponding user values
-        Map<String, String> replacements = new HashMap<>();
-
-        if (documentType == DocumentType.APPLICATION_LETTER_TEMPLATE) {
-            replacements.put("ADI - SOYADI", user.getFullName());
-            replacements.put("SINIFI", user.getGrade());
-            replacements.put("OKUL NUMARASI", user.getSchoolId());
-            replacements.put("T.C. KİMLİK NO", user.getIdentityNumber());
-            replacements.put("CEP TELEFONU", user.getContactNumber());
-            replacements.put("E-POSTA", user.getEmail());
-        } else if (documentType == DocumentType.APPLICATION_FORM_TEMPLATE) {
-            // Define replacements specific to the application form template
-            replacements.put("ADI - SOYADI", user.getFullName());
-            replacements.put("SINIFI", user.getGrade());
-            replacements.put("OKUL NUMARASI", user.getSchoolId());
-            replacements.put("T.C. KİMLİK NO", user.getIdentityNumber());
-            replacements.put("""
-                    CEP TELEFONU
-
-                    (Kendisinin / Yakınının)""", user.getContactNumber());
-            replacements.put("E-POSTA", user.getEmail());
-        }
-        // Replace placeholders in the document
-        for (XWPFParagraph p : doc.getParagraphs()) {
-            int runsSize = p.getRuns().size();
-            for (int i = 0; i < runsSize; i++) {
-                XWPFRun run = p.getRuns().get(i);
-                String text = run.getText(0);
-                if (text != null && replacements.containsKey(text.trim())) {
-                    if (i + 1 < runsSize) {
-                        XWPFRun nextRun = p.getRuns().get(i + 1);
-                        nextRun.setText(replacements.get(text.trim()), 0);
-                    } else {
-                        // If no run exists after the title, create a new one
-                        XWPFRun newRun = p.createRun();
-                        newRun.setText(replacements.get(text.trim()));
-                    }
-                    break; // Break after setting text to avoid overwriting multiple times
-                }
+    private void fillDocTemplate(InputStream input, Map<Integer, String> replacements, String outputFilePath) throws IOException {
+        HWPFDocument doc = new HWPFDocument(input);
+        Range range = doc.getRange();
+        TableIterator itr = new TableIterator(range);
+        if (itr.hasNext()) {
+            Table table = itr.next();
+            for (Map.Entry<Integer, String> entry : replacements.entrySet()) {
+                TableRow row = table.getRow(entry.getKey());
+                TableCell cell = row.getCell(1);
+                Paragraph paragraph = cell.getParagraph(0);
+                paragraph.replaceText(entry.getValue(), false);
             }
         }
 
-        // Save the filled document
-        try (FileOutputStream out = new FileOutputStream("Filled_Document_" + documentType + ".docx")) {
+        try (FileOutputStream out = new FileOutputStream(outputFilePath)) {
             doc.write(out);
         }
     }
 
+    private void fillDocxTemplate(InputStream input, Map<Integer, String> replacements, String outputFilePath) throws IOException {
+        XWPFDocument doc = new XWPFDocument(input);
+        XWPFTable table = doc.getTables().get(0);
+        for (Map.Entry<Integer, String> entry : replacements.entrySet()) {
+            XWPFTableRow row = table.getRow(entry.getKey());
+            XWPFTableCell cell = row.getCell(1);
+            cell.setText(entry.getValue());
+        }
+
+        try (FileOutputStream out = new FileOutputStream(outputFilePath)) {
+            doc.write(out);
+        }
+    }
 
     private void addTableHeader(PdfPTable table, Font font) {
         Stream.of("ID", "Full Name", "E-mail", "Grade", "Contact Number", "Identity Number")
@@ -143,5 +151,14 @@ public class DocumentService {
             table.addCell(new Phrase(student.getContactNumber(), font));
             table.addCell(new Phrase(student.getIdentityNumber(), font));
         }
+    }
+
+    public Document createDocument(MultipartFile file, DocumentType documentType) throws IOException {
+        return documentRepository.save(new Document(
+                file.getBytes(),
+                file.getContentType(),
+                documentType,
+                DocumentStatus.APPROVED
+        ));
     }
 }
