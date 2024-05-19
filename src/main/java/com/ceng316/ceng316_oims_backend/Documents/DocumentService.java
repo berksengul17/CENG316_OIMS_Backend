@@ -100,7 +100,10 @@ public class DocumentService {
             XWPFTableCell cell = row.getCell(1);
             // Clear existing text in the cell
             cell.removeParagraph(0);
-            cell.addParagraph().createRun().setText(entry.getValue());
+            XWPFParagraph paragraph = cell.addParagraph();
+            XWPFRun run = paragraph.createRun();
+            run.setText(entry.getValue());
+            run.setFontSize(10);
         }
 
         try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
