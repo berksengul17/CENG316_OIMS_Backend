@@ -40,6 +40,7 @@ public class StudentController {
         }
     }
 
+    //FIXME kullanıcı elle mail girince girilen maili kontrol et
     @PostMapping("/{studentId}/apply/{announcementId}")
     public ResponseEntity<?> applyToAnnouncement(@PathVariable Long studentId, @PathVariable Long announcementId) {
         try {

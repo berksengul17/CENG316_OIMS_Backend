@@ -26,7 +26,7 @@ public class IztechUser{
     private String password;
     @Enumerated(EnumType.STRING)
     private Role role;
-    @OneToMany(mappedBy = "iztech_user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "iztechUser", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     @ToString.Exclude
     private List<IztechUserFeedback> feedbacks;

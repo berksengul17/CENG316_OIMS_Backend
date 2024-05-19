@@ -34,7 +34,7 @@ public class DocumentController {
                                                  @RequestParam("type") DocumentType documentType) {
         try {
             Document document = documentService.createDocument(file, documentType);
-            return ResponseEntity.ok("Announcement with ID " + document.getDocumentId() + " created successfully.");
+            return ResponseEntity.ok("Document with ID " + document.getDocumentId() + " created successfully.");
         }  catch (IOException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Can't read file: " + e.getMessage());
         }

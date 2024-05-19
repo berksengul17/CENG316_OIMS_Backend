@@ -81,8 +81,15 @@ public class AnnouncementService {
                 .orElseThrow(() -> new IllegalArgumentException("Announcement not found"));
     }
 
-    public List<Announcement> getAllAnnouncements() {
+    public List<Announcement> getPendingAnnouncements() {
         return announcementRepository.findByDocumentStatus(DocumentStatus.PENDING);
+    }
+
+    public List<Announcement> getApprovedAnnouncements() {
+        return announcementRepository.findByDocumentStatus(DocumentStatus.APPROVED)
+                .stream()
+                .filter(announcement -> announcement.getDeadline().isAfter(LocalDate.now()))
+                .toList();
     }
 
     public List<Announcement> getAnnouncementsForCompany(Long id) {

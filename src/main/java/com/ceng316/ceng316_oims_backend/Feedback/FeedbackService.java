@@ -15,6 +15,8 @@ import com.ceng316.ceng316_oims_backend.IztechUser.IztechUserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @AllArgsConstructor
 public class FeedbackService {
@@ -25,10 +27,18 @@ public class FeedbackService {
     private final CompanyRepository companyRepository;
     private final IztechUserRepository iztechUserRepository;
 
+    //FIXME feedback verildikten sorna status değiştirilmeli
     public AnnouncementFeedback addAnnouncementFeedback(Long announcementId, String content){
         Announcement announcement = announcementRepository.findById(announcementId)
                 .orElseThrow(() -> new IllegalArgumentException("Announcement not found"));
         return announcementFeedbackRepository.save(new AnnouncementFeedback(content, announcement));
+    }
+
+    public List<AnnouncementFeedback> getAnnouncementFeedback(Long announcementId) {
+        Announcement announcement = announcementRepository.findById(announcementId)
+                .orElseThrow(() -> new IllegalArgumentException("Announcement not found"));
+
+        return announcementFeedbackRepository.findAllByAnnouncement(announcement);
     }
 
     public CompanyFeedback addCompanyFeedback(Long companyId, String content){
@@ -37,9 +47,23 @@ public class FeedbackService {
         return companyFeedbackRepository.save(new CompanyFeedback(content, company));
     }
 
+    public List<CompanyFeedback> getCompanyFeedback(Long companyId) {
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new IllegalArgumentException("Company not found"));
+
+        return companyFeedbackRepository.findAllByCompany(company);
+    }
+
     public IztechUserFeedback addIztechUserFeedback(Long iztechUserId, String content){
         IztechUser iztechUser = iztechUserRepository.findById(iztechUserId)
                 .orElseThrow(() -> new IllegalArgumentException("Iztech User not found"));
         return iztechUserFeedbackRepository.save(new IztechUserFeedback(content, iztechUser));
+    }
+
+    public List<IztechUserFeedback> getUserFeedback(Long userId) {
+        IztechUser iztechUser = iztechUserRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("Iztech User not found"));
+
+        return iztechUserFeedbackRepository.findAllByIztechUser(iztechUser);
     }
 }

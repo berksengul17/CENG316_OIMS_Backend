@@ -58,9 +58,13 @@ public class AnnouncementController {
                 .body(announcement.getDocument().getContent());
     }
 
-    @GetMapping
-    public ResponseEntity<List<Announcement>> getAllAnnouncements() {
-        return ResponseEntity.ok(announcementService.getAllAnnouncements());
+    @GetMapping("/pending")
+    public ResponseEntity<List<Announcement>> getPendingAnnouncements() {
+        return ResponseEntity.ok(announcementService.getPendingAnnouncements());
+    }
+    @GetMapping("/approved")
+    public ResponseEntity<List<Announcement>> getApprovedAnnouncements() {
+        return ResponseEntity.ok(announcementService.getApprovedAnnouncements());
     }
 
     @GetMapping("/company/{id}")

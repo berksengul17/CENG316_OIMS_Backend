@@ -16,10 +16,10 @@ import lombok.Setter;
 public class IztechUserFeedback extends Feedback {
     @ManyToOne
     @JoinColumn(name = "iztech_user_id", referencedColumnName = "id")
-    private IztechUser iztech_user;
+    private IztechUser iztechUser;
 
-    public IztechUserFeedback(String content, IztechUser iztech_user) {
+    public IztechUserFeedback(String content, IztechUser iztechUser) {
         super(content);
-        this.iztech_user = iztech_user;
+        this.iztechUser = iztechUser;
     }
 }

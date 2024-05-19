@@ -31,12 +31,17 @@ public class CompanyController {
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Company request) {
-        Company loggedInCompany = companyService.login(request);
-        if(loggedInCompany != null) {
-            return ResponseEntity.ok(loggedInCompany);
-        } else {
+        try {
+            Company loggedInCompany = companyService.login(request);
+            if(loggedInCompany != null) {
+                return ResponseEntity.ok(loggedInCompany);
+            } else {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body("Email or password is wrong");
+            }
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Email or password is wrong");
+                    .body(e.getMessage());
         }
     }
 

@@ -34,9 +34,15 @@ public class CompanyService {
     public Company login(Company companyCredentials) {
         Optional<Company> company = companyRepository.findByEmail(companyCredentials.getEmail());
 
-        if (company.isPresent() && company.get().getPassword().equals(companyCredentials.getPassword())) {
-            Company companyInfo = company.get();
-            return new Company(companyInfo.getId(), companyInfo.getEmail(), companyInfo.getCompanyName(), companyInfo.getRegistrationStatus());
+        if (company.isPresent()) {
+            RegistrationStatus status = company.get().getRegistrationStatus();
+            if (status == RegistrationStatus.BANNED) {
+                throw new IllegalArgumentException("Company is " + status.toString().toLowerCase());
+            }
+            if (company.get().getPassword().equals(companyCredentials.getPassword())) {
+                Company companyInfo = company.get();
+                return new Company(companyInfo.getId(), companyInfo.getEmail(), companyInfo.getCompanyName(), companyInfo.getRegistrationStatus());
+            }
         }
 
         return null;
