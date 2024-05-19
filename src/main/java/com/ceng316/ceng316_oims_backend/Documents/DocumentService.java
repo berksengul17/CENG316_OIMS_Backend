@@ -54,7 +54,7 @@ public class DocumentService {
 
         BaseFont baseFont = BaseFont.createFont("src/main/resources/static/OpenSans-Regular.ttf",
                                                 BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-        Font font = new Font(baseFont, 12);
+        Font font = new Font(baseFont, 10);
 
         document.open();
 
@@ -68,7 +68,7 @@ public class DocumentService {
     }
 
     @Transactional
-    public void fillDocument(Long userId, DocumentType documentType) throws Exception {
+    public Document fillDocument(Long userId, DocumentType documentType) throws IOException{
         IztechUser user = iztechUserRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
         Document templateFile = documentRepository.findByType(documentType)
                 .orElseThrow(() -> new IllegalArgumentException("Template document not found."));
@@ -83,51 +83,31 @@ public class DocumentService {
         replacements.put(6, user.getContactNumber());
         replacements.put(7, user.getEmail());
 
-        if (isOle2Format(templateFile.getContent())) {
-            fillDocTemplate(input, replacements,
-                    "src/main/resources/static/Filled_Document_" + documentType + ".doc");
-        } else {
-            fillDocxTemplate(input, replacements,
-                    "src/main/resources/static/Filled_Document_" + documentType + ".docx");
-        }
+        byte[] docBytes = fillDocxTemplate(input, replacements);
+
+        String docTypeStr = documentType.toString().replace("_TEMPLATE", "");
+        DocumentType docType = DocumentType.valueOf(docTypeStr);
+
+        return documentRepository.save(new Document(docBytes,
+                "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                docType, DocumentStatus.PENDING));
     }
-
-    private boolean isOle2Format(byte[] content) {
-        // Simple check to determine if the content is OLE2 format
-        // OLE2 format files start with specific bytes (D0 CF 11 E0 A1 B1 1A E1)
-        return content.length > 8 && content[0] == (byte) 0xD0 && content[1] == (byte) 0xCF;
-    }
-
-    private void fillDocTemplate(InputStream input, Map<Integer, String> replacements, String outputFilePath) throws IOException {
-        HWPFDocument doc = new HWPFDocument(input);
-        Range range = doc.getRange();
-        TableIterator itr = new TableIterator(range);
-        if (itr.hasNext()) {
-            Table table = itr.next();
-            for (Map.Entry<Integer, String> entry : replacements.entrySet()) {
-                TableRow row = table.getRow(entry.getKey());
-                TableCell cell = row.getCell(1);
-                Paragraph paragraph = cell.getParagraph(0);
-                paragraph.replaceText(entry.getValue(), false);
-            }
-        }
-
-        try (FileOutputStream out = new FileOutputStream(outputFilePath)) {
-            doc.write(out);
-        }
-    }
-
-    private void fillDocxTemplate(InputStream input, Map<Integer, String> replacements, String outputFilePath) throws IOException {
+    private byte[] fillDocxTemplate(InputStream input, Map<Integer, String> replacements) throws IOException {
         XWPFDocument doc = new XWPFDocument(input);
         XWPFTable table = doc.getTables().get(0);
         for (Map.Entry<Integer, String> entry : replacements.entrySet()) {
             XWPFTableRow row = table.getRow(entry.getKey());
             XWPFTableCell cell = row.getCell(1);
-            cell.setText(entry.getValue());
+            // Clear existing text in the cell
+            cell.removeParagraph(0);
+            cell.addParagraph().createRun().setText(entry.getValue());
         }
 
-        try (FileOutputStream out = new FileOutputStream(outputFilePath)) {
+        try (ByteArrayOutputStream out = new ByteArrayOutputStream()) {
             doc.write(out);
+            byte[] docBytes = out.toByteArray();
+            doc.close();
+            return docBytes;
         }
     }
 
