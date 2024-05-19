@@ -3,20 +3,24 @@ package com.ceng316.ceng316_oims_backend.Documents;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUserRepository;
 import com.ceng316.ceng316_oims_backend.Student.StudentService;
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.*;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.pdf.BaseFont;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import lombok.AllArgsConstructor;
-import org.apache.poi.hwpf.HWPFDocument;
-import org.apache.poi.hwpf.usermodel.*;
-import org.apache.poi.hwpf.usermodel.Paragraph;
 import org.apache.poi.xwpf.usermodel.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.*;
-import java.util.*;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Stream;
 
 @Service
@@ -44,17 +48,16 @@ public class DocumentService {
         return documentRepository.save(document);
     }
 
-    public void createEligibleStudentsPdf() throws IOException, DocumentException {
+    public byte[] createEligibleStudentsPdf() throws IOException, DocumentException {
         List<IztechUser> eligibleStudents = studentService.getEligibleStudents();
 
-        File file = new File("src/main/resources/static/Eligible_Students.pdf");
-
         com.itextpdf.text.Document document = new com.itextpdf.text.Document();
-        PdfWriter.getInstance(document, new FileOutputStream(file));
+        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
+        PdfWriter.getInstance(document, byteArrayOutputStream);
 
         BaseFont baseFont = BaseFont.createFont("src/main/resources/static/OpenSans-Regular.ttf",
                                                 BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-        Font font = new Font(baseFont, 10);
+        Font font = new Font(baseFont, 12);
 
         document.open();
 
@@ -65,6 +68,7 @@ public class DocumentService {
         document.add(table);
         document.close();
 
+        return byteArrayOutputStream.toByteArray();
     }
 
     @Transactional

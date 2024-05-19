@@ -5,10 +5,7 @@ import com.itextpdf.text.DocumentException;
 import lombok.AllArgsConstructor;
 import org.apache.coyote.Response;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -24,11 +21,17 @@ public class DocumentController {
     private final DocumentService documentService;
     private final DocumentRepository documentRepository;
 
-    @GetMapping("/createEligibleStudentsPdf")
-    public ResponseEntity<String> createEligibleStudentsPdf() {
+    @GetMapping("/getEligibleStudentsPdf")
+    public ResponseEntity<?> getEligibleStudentsPdf() {
         try {
-            documentService.createEligibleStudentsPdf();
-            return ResponseEntity.ok("Eligible students pdf is created.");
+            byte[] eligibleStudentsPdf = documentService.createEligibleStudentsPdf();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_PDF);
+            headers.setContentDisposition(
+                    ContentDisposition.builder("attachment")
+                            .filename("eligible_students.pdf")
+                            .build());
+            return new ResponseEntity<>(eligibleStudentsPdf, headers, HttpStatus.OK);
         } catch (DocumentException e ) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Document error:" + e.getMessage());
