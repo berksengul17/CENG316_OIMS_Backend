@@ -37,8 +37,7 @@ public class IztechUser{
     private Integer isEligible = 0;
 
     public IztechUser(String fullName, String email, String password,
-                      Role role,
-                      String identityNumber, String contactNumber) {
+                      Role role, String identityNumber, String contactNumber) {
         this.fullName = fullName;
         this.email = email;
         this.password = password;
@@ -46,6 +45,18 @@ public class IztechUser{
 //        this.feedbacks = feedbacks;
         this.identityNumber = identityNumber;
         this.contactNumber = contactNumber;
+    }
+
+    public IztechUser(String fullName, String email, String password,
+                      Role role, String identityNumber, String contactNumber, int isEligible) {
+        this.fullName = fullName;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+//        this.feedbacks = feedbacks;
+        this.identityNumber = identityNumber;
+        this.contactNumber = contactNumber;
+        this.isEligible = isEligible;
     }
 
     public IztechUser(String fullName, String email, String password,
@@ -63,9 +74,8 @@ public class IztechUser{
         this.contactNumber = contactNumber;
     }
     public IztechUser(Long id, String fullName, String email,
-                       Role role,
-                       String identityNumber, String schoolId, String grade,
-                       String contactNumber) {
+                       Role role, String identityNumber,
+                       String schoolId, String grade, String contactNumber) {
         this.id = id;
         this.fullName = fullName;
         this.email = email;
