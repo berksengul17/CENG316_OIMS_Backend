@@ -2,26 +2,18 @@ package com.ceng316.ceng316_oims_backend.Documents;
 
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUserRepository;
-import com.ceng316.ceng316_oims_backend.Student.StudentService;
-import com.itextpdf.text.BaseColor;
-import com.itextpdf.text.DocumentException;
-import com.itextpdf.text.Font;
-import com.itextpdf.text.Phrase;
-import com.itextpdf.text.pdf.BaseFont;
-import com.itextpdf.text.pdf.PdfPCell;
-import com.itextpdf.text.pdf.PdfPTable;
-import com.itextpdf.text.pdf.PdfWriter;
 import lombok.AllArgsConstructor;
 import org.apache.poi.xwpf.usermodel.*;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
@@ -30,7 +22,6 @@ public class DocumentService {
 
     private final DocumentRepository documentRepository;
     private final IztechUserRepository iztechUserRepository;
-    private final StudentService studentService;
 
     public Document approveDocument(Long id) {
         Document document = documentRepository.findById(id)
@@ -48,44 +39,31 @@ public class DocumentService {
         return documentRepository.save(document);
     }
 
-    public byte[] createEligibleStudentsPdf() throws IOException, DocumentException {
-        List<IztechUser> eligibleStudents = studentService.getEligibleStudents();
-
-        com.itextpdf.text.Document document = new com.itextpdf.text.Document();
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        PdfWriter.getInstance(document, byteArrayOutputStream);
-
-        BaseFont baseFont = BaseFont.createFont("src/main/resources/static/OpenSans-Regular.ttf",
-                                                BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-        Font font = new Font(baseFont, 12);
-
-        document.open();
-
-        PdfPTable table = new PdfPTable(6);
-        addTableHeader(table, font);
-        addRows(table, eligibleStudents, font);
-
-        document.add(table);
-        document.close();
-
-        return byteArrayOutputStream.toByteArray();
+    @Transactional
+    public Document prepareDocument(IztechUser student, DocumentType documentType) throws IOException {
+        return fillDocument(student, documentType);
     }
 
     @Transactional
-    public Document fillDocument(Long userId, DocumentType documentType) throws IOException{
-        IztechUser user = iztechUserRepository.findById(userId).orElseThrow(() -> new IllegalArgumentException("User not found"));
+    public Document prepareDocument(Long studentId, DocumentType documentType) throws IOException {
+        IztechUser student = iztechUserRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+        return fillDocument(student, documentType);
+    }
+
+    private Document fillDocument(IztechUser student, DocumentType documentType) throws IOException {
         Document templateFile = documentRepository.findByType(documentType)
                 .orElseThrow(() -> new IllegalArgumentException("Template document not found."));
 
         InputStream input = new ByteArrayInputStream(templateFile.getContent());
 
         Map<Integer, String> replacements = new HashMap<>();
-        replacements.put(0, user.getFullName());
-        replacements.put(3, user.getGrade());
-        replacements.put(4, user.getSchoolId());
-        replacements.put(5, user.getIdentityNumber());
-        replacements.put(6, user.getContactNumber());
-        replacements.put(7, user.getEmail());
+        replacements.put(0, student.getFullName());
+        replacements.put(3, student.getGrade());
+        replacements.put(4, student.getSchoolId());
+        replacements.put(5, student.getIdentityNumber());
+        replacements.put(6, student.getContactNumber());
+        replacements.put(7, student.getEmail());
 
         byte[] docBytes = fillDocxTemplate(input, replacements);
 
@@ -115,28 +93,6 @@ public class DocumentService {
             byte[] docBytes = out.toByteArray();
             doc.close();
             return docBytes;
-        }
-    }
-
-    private void addTableHeader(PdfPTable table, Font font) {
-        Stream.of("ID", "Full Name", "E-mail", "Grade", "Contact Number", "Identity Number")
-                .forEach(columnTitle -> {
-                    PdfPCell header = new PdfPCell();
-                    header.setBackgroundColor(BaseColor.LIGHT_GRAY);
-                    header.setBorderWidth(1);
-                    header.setPhrase(new Phrase(columnTitle, font));
-                    table.addCell(header);
-                });
-    }
-
-    private void addRows(PdfPTable table, List<IztechUser> eligibleStudents, Font font) {
-        for (IztechUser student : eligibleStudents) {
-            table.addCell(new Phrase(String.valueOf(student.getId()), font));
-            table.addCell(new Phrase(student.getFullName(), font));
-            table.addCell(new Phrase(student.getEmail(), font));
-            table.addCell(new Phrase(student.getGrade(), font));
-            table.addCell(new Phrase(student.getContactNumber(), font));
-            table.addCell(new Phrase(student.getIdentityNumber(), font));
         }
     }
 

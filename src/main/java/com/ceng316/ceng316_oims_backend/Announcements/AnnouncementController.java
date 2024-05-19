@@ -1,6 +1,5 @@
 package com.ceng316.ceng316_oims_backend.Announcements;
 
-import lombok.AllArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;

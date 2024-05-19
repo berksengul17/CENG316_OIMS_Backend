@@ -1,8 +1,5 @@
 package com.ceng316.ceng316_oims_backend.Company;
 
-import com.ceng316.ceng316_oims_backend.Announcements.Announcement;
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.OneToMany;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.core.env.Environment;

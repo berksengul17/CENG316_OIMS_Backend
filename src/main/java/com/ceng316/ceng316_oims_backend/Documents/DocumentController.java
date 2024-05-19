@@ -1,18 +1,14 @@
 package com.ceng316.ceng316_oims_backend.Documents;
 
-import com.ceng316.ceng316_oims_backend.Announcements.Announcement;
-import com.itextpdf.text.DocumentException;
 import lombok.AllArgsConstructor;
-import org.apache.coyote.Response;
-import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.*;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.time.LocalDate;
 
 @RestController
 @AllArgsConstructor
@@ -21,30 +17,11 @@ public class DocumentController {
     private final DocumentService documentService;
     private final DocumentRepository documentRepository;
 
-    @GetMapping("/getEligibleStudentsPdf")
-    public ResponseEntity<?> getEligibleStudentsPdf() {
-        try {
-            byte[] eligibleStudentsPdf = documentService.createEligibleStudentsPdf();
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_PDF);
-            headers.setContentDisposition(
-                    ContentDisposition.builder("attachment")
-                            .filename("eligible_students.pdf")
-                            .build());
-            return new ResponseEntity<>(eligibleStudentsPdf, headers, HttpStatus.OK);
-        } catch (DocumentException e ) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Document error:" + e.getMessage());
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error while creating file:" + e.getMessage());
-        }
-    }
-
+    //TODO buna gerek olmayabilir
     @GetMapping("/fillDocument")
     public ResponseEntity<String> fillDocument(@RequestParam Long studentId, @RequestParam DocumentType documentType) {
         try {
-            documentService.fillDocument(studentId, documentType);
+            documentService.prepareDocument(studentId, documentType);
             return ResponseEntity.ok("Document is filled");
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)

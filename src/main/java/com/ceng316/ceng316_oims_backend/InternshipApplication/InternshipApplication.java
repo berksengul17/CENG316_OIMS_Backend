@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 
 @Entity
 @Getter
@@ -35,4 +36,14 @@ public class InternshipApplication {
     @Enumerated(EnumType.STRING)
     private InternshipApplicationStatus status;
     private LocalDate applicationDate;
+
+    public InternshipApplication(IztechUser student, Announcement announcement,
+                                 Document applicationLetter) {
+        this.student = student;
+        this.announcement = announcement;
+        this.applicationLetter = applicationLetter;
+        this.status = InternshipApplicationStatus.PENDING;
+        this.applicationDate = LocalDate.now(ZoneId.of("Europe/Istanbul"));
+
+    }
 }
