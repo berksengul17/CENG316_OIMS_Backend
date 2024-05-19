@@ -20,7 +20,7 @@ public class StudentController {
         return ResponseEntity.ok(studentService.getEligibleStudents());
     }
 
-    @GetMapping("/getEligibleStudentsPdf")
+    @GetMapping("/get-eligible-students-pdf")
     public ResponseEntity<?> getEligibleStudentsPdf() {
         try {
             byte[] eligibleStudentsPdf = studentService.createEligibleStudentsPdf();
