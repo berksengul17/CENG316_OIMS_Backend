@@ -45,23 +45,23 @@ public class DocumentService {
         List<IztechUser> eligibleStudents = studentService.getEligibleStudents();
 
         File file = new File("src/main/resources/static/Eligible_Students.pdf");
-        if (file.createNewFile()) {
-            com.itextpdf.text.Document document = new com.itextpdf.text.Document();
-            PdfWriter.getInstance(document, new FileOutputStream(file));
 
-            BaseFont baseFont = BaseFont.createFont("src/main/resources/static/OpenSans-Regular.ttf",
-                                                    BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
-            Font font = new Font(baseFont, 12);
+        com.itextpdf.text.Document document = new com.itextpdf.text.Document();
+        PdfWriter.getInstance(document, new FileOutputStream(file));
 
-            document.open();
+        BaseFont baseFont = BaseFont.createFont("src/main/resources/static/OpenSans-Regular.ttf",
+                                                BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        Font font = new Font(baseFont, 12);
 
-            PdfPTable table = new PdfPTable(6);
-            addTableHeader(table, font);
-            addRows(table, eligibleStudents, font);
+        document.open();
 
-            document.add(table);
-            document.close();
-        }
+        PdfPTable table = new PdfPTable(6);
+        addTableHeader(table, font);
+        addRows(table, eligibleStudents, font);
+
+        document.add(table);
+        document.close();
+
     }
 
     public void fillDocument(Long userId, DocumentType documentType) throws Exception {
