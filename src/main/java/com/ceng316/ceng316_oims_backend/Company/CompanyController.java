@@ -1,5 +1,7 @@
 package com.ceng316.ceng316_oims_backend.Company;
 
+import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
+import com.ceng316.ceng316_oims_backend.IztechUser.IztechUserService;
 import com.ceng316.ceng316_oims_backend.MailSender.MailSenderService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.AllArgsConstructor;
@@ -17,6 +19,7 @@ public class CompanyController {
 
     private final CompanyService companyService;
     private final MailSenderService mailSenderService;
+    private final IztechUserService iztechUserService;
 
     @PostMapping("/signUp")
     public ResponseEntity<String> signUp(@RequestBody Company request) {
@@ -62,5 +65,21 @@ public class CompanyController {
     public ResponseEntity<List<Company>> listCompanies() {
         return ResponseEntity.ok(companyService.getCompanies());
     }
+
+    @GetMapping("/interns/{id}")
+    public ResponseEntity<List<IztechUser>> getInterns(@PathVariable Long id) {
+        return ResponseEntity.ok(iztechUserService.getStudents(id));
+    }
+
+    @PutMapping("/{email}/{companyId}")
+    public ResponseEntity<?> updateStudentCompanyOwner(@PathVariable String email, @PathVariable Long companyId) {
+        try {
+            IztechUser iztechUser = iztechUserService.updateStudentCompanyOwner(email, companyId);
+            return ResponseEntity.ok(iztechUser);
+        } catch (Exception e)  {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+        }
+    }
 }
+
 

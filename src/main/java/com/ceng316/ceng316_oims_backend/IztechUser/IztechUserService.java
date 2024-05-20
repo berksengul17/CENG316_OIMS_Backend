@@ -1,8 +1,10 @@
 package com.ceng316.ceng316_oims_backend.IztechUser;
 
+import com.ceng316.ceng316_oims_backend.Company.CompanyRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -10,6 +12,7 @@ import java.util.Optional;
 public class IztechUserService {
 
     private final IztechUserRepository iztechUserRepository;
+    private final CompanyRepository companyRepository;
 
     public IztechUser login(IztechUser iztechUserCredentials) {
         Optional<IztechUser> optional_iztech_user = Optional.empty();
@@ -27,4 +30,15 @@ public class IztechUserService {
 
         return null;
     }
-}
+    public List<IztechUser> getStudents(Long id) {
+        return iztechUserRepository.findByCompanyId(id);
+    }
+
+    public IztechUser updateStudentCompanyOwner(String email, Long companyId) {
+        IztechUser student = iztechUserRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+        student.setCompany(companyRepository.findById(companyId).get());  // assuming there's a setCompanyId method
+        return iztechUserRepository.save(student);
+        }
+    }
+

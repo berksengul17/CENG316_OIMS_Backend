@@ -8,4 +8,5 @@ import java.util.Optional;
 public interface IztechUserRepository extends JpaRepository<IztechUser, Long> {
     Optional<IztechUser> findByEmail(String email);
     Optional<List<IztechUser>> findByRole(Role role);
+    List<IztechUser> findByCompanyId(Long companyId);
 }
