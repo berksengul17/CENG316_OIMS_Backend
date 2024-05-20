@@ -3,7 +3,6 @@ package com.ceng316.ceng316_oims_backend;
 import com.ceng316.ceng316_oims_backend.Company.Company;
 import com.ceng316.ceng316_oims_backend.Company.CompanyRepository;
 import com.ceng316.ceng316_oims_backend.Company.RegistrationStatus;
-import com.ceng316.ceng316_oims_backend.Documents.DocumentRepository;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUserRepository;
 import com.ceng316.ceng316_oims_backend.IztechUser.Role;
@@ -29,6 +28,12 @@ public class DataInitializer implements CommandLineRunner {
         iztechUserRepository.save(new IztechUser("Buket Öksüzoğlu", "buket@iyte.edu.tr", "123", Role.SUMMER_PRACTICE_COORDINATOR, "13154178426", "0555 555 55 55"));
         companyRepository.save(new Company("test_approved@company.com", "123", "Test Company Approved", RegistrationStatus.APPROVED));
         companyRepository.save(new Company("test_pending@company.com", "123", "Test Company Pending", RegistrationStatus.PENDING));
+        companyRepository.save(new Company("test_pending@company.com    ", "123", "Test Company Pending", RegistrationStatus.PENDING));
+        companyRepository.save(new Company("test_pending2@company.com", "123", "Test Company Pending", RegistrationStatus.PENDING));
+        companyRepository.save(new Company("test_pending3@company.com", "123", "Test Company Pending", RegistrationStatus.PENDING));
+        companyRepository.save(new Company("test_pending4@company.com", "123", "Test Company Pending", RegistrationStatus.PENDING));
+        companyRepository.save(new Company("test_pending5@company.com", "123", "Test Company Pending", RegistrationStatus.PENDING));
+
         companyRepository.save(new Company("test_banned@company.com", "123", "Test Company Banned", RegistrationStatus.BANNED));
     }
 }
