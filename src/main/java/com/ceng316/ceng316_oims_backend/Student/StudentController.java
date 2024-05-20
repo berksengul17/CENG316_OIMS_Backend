@@ -41,10 +41,23 @@ public class StudentController {
     }
 
     //FIXME kullanıcı elle mail girince girilen maili kontrol et
-    @PostMapping("/{studentId}/apply/{announcementId}")
+    @PostMapping("/{studentId}/apply-announcement/{announcementId}")
     public ResponseEntity<?> applyToAnnouncement(@PathVariable Long studentId, @PathVariable Long announcementId) {
         try {
             return ResponseEntity.ok(studentService.applyToAnnouncement(studentId, announcementId));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error while filling document: " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/{studentId}/apply-company")
+    public ResponseEntity<?> applyToCompany(@PathVariable Long studentId, @RequestParam String companyEmail) {
+        try {
+            return ResponseEntity.ok(studentService.applyToCompany(studentId, companyEmail));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(e.getMessage());
