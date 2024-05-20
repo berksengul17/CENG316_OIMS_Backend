@@ -27,6 +27,7 @@ public class Announcement {
     private LocalDate deadline;
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "document_id", referencedColumnName = "documentId")
+
     private Document document;
     @ManyToOne
     @JoinColumn(name = "company_id", referencedColumnName = "id")
