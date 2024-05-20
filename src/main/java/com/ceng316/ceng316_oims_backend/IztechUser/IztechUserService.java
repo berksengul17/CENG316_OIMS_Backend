@@ -37,7 +37,8 @@ public class IztechUserService {
     public IztechUser updateStudentCompanyOwner(String email, Long companyId) {
         IztechUser student = iztechUserRepository.findByEmail(email)
                 .orElseThrow(() -> new IllegalArgumentException("Student not found"));
-        student.setCompany(companyRepository.findById(companyId).get());  // assuming there's a setCompanyId method
+        student.setCompany(companyRepository.findById(companyId).
+                orElseThrow(() -> new IllegalArgumentException("Company not found")));  // assuming there's a setCompanyId method
         return iztechUserRepository.save(student);
         }
     }
