@@ -37,6 +37,7 @@ public class Company {
     private List<CompanyFeedback> feedbacks;
 
     @OneToMany(mappedBy = "company")
+    @JsonIgnore
     private List<IztechUser> iztechUser;
 
     public Company(String email, String password, String companyName) {

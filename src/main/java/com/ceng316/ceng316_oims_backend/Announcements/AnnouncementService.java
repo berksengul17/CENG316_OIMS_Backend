@@ -88,7 +88,8 @@ public class AnnouncementService {
     public List<Announcement> getApprovedAnnouncements() {
         return announcementRepository.findByDocumentStatus(DocumentStatus.APPROVED)
                 .stream()
-                .filter(announcement -> announcement.getDeadline().isAfter(LocalDate.now()))
+                .filter(announcement -> announcement.getDeadline().isAfter(LocalDate.now()) ||
+                                        announcement.getDeadline().isEqual(LocalDate.now()))
                 .toList();
     }
 
