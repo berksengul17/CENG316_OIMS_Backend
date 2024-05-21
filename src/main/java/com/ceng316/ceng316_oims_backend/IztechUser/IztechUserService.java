@@ -1,6 +1,9 @@
 package com.ceng316.ceng316_oims_backend.IztechUser;
 
 import com.ceng316.ceng316_oims_backend.Company.CompanyRepository;
+import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplication;
+import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicationRepository;
+import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicationStatus;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -13,6 +16,7 @@ public class IztechUserService {
 
     private final IztechUserRepository iztechUserRepository;
     private final CompanyRepository companyRepository;
+    private final InternshipApplicationRepository internshipApplicationRepository;
 
     public IztechUser login(IztechUser iztechUserCredentials) {
         Optional<IztechUser> optional_iztech_user = Optional.empty();
@@ -30,16 +34,19 @@ public class IztechUserService {
 
         return null;
     }
-    public List<IztechUser> getStudents(Long id) {
-        return iztechUserRepository.findByCompanyId(id);
+    public List<InternshipApplication> getStudents(Long id) {
+        return internshipApplicationRepository.findByCompanyId(id);
     }
 
-    public IztechUser updateStudentCompanyOwner(String email, Long companyId) {
+    public InternshipApplication updateStudentCompanyOwner(String email, Long companyId) {
         IztechUser student = iztechUserRepository.findByEmail(email)
-                .orElseThrow(() -> new IllegalArgumentException("Student not found"));
-        student.setCompany(companyRepository.findById(companyId).
-                orElseThrow(() -> new IllegalArgumentException("Company not found")));  // assuming there's a setCompanyId method
-        return iztechUserRepository.save(student);
+                .orElseThrow(()-> new IllegalArgumentException("Student not found"));
+
+        InternshipApplication internshipApplication = internshipApplicationRepository.findByStudentIdAndCompanyId(student.getId(), companyId)
+                .orElseThrow(() -> new IllegalArgumentException("Internship application not found"));
+
+        internshipApplication.setStatus(InternshipApplicationStatus.ACCEPTED);
+        return internshipApplicationRepository.save(internshipApplication);
         }
     }
 

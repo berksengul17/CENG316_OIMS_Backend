@@ -41,6 +41,7 @@ public class InternshipApplication {
     private InternshipApplicationStatus status;
     private LocalDate applicationDate;
 
+
     public InternshipApplication(IztechUser student, Announcement announcement,
                                  Document applicationLetter) {
         this.student = student;

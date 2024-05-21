@@ -2,10 +2,13 @@ package com.ceng316.ceng316_oims_backend.Company;
 
 import com.ceng316.ceng316_oims_backend.Announcements.Announcement;
 import com.ceng316.ceng316_oims_backend.Feedback.CompanyFeedback.CompanyFeedback;
-import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
+import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplication;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import java.util.List;
@@ -36,9 +39,9 @@ public class Company {
     @ToString.Exclude
     private List<CompanyFeedback> feedbacks;
 
-    @OneToMany(mappedBy = "company")
+    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    private List<IztechUser> iztechUser;
+    private List<InternshipApplication> internshipApplications;
 
     public Company(String email, String password, String companyName) {
         this.email = email;

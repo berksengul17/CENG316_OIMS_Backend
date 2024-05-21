@@ -35,7 +35,7 @@ public class DataInitializer implements CommandLineRunner {
         IztechUser student = new IztechUser("Berk Şengül", "berk@std.iyte.edu.tr", "123", Role.STUDENT, "13154178426", "0555 555 55 55", 1);
         student.setGrade("3");
         student.setSchoolId("280201015");
-        student.setCompany(companyRepository.findByEmail("berksengul9a@gmail.com").orElse(null));
+
 
         iztechUserRepository.save(student);
         iztechUserRepository.save(new IztechUser("Buket Öksüzoğlu", "buket@iyte.edu.tr", "123", Role.SUMMER_PRACTICE_COORDINATOR, "13154178426", "0555 555 55 55"));

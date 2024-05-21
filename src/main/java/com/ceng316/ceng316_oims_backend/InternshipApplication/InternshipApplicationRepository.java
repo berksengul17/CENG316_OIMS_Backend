@@ -7,10 +7,15 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface InternshipApplicationRepository extends JpaRepository<InternshipApplication, Long> {
     List<InternshipApplication> findAllByStudentId(Long studentId);
     @Transactional
     InternshipApplication findByStudentAndCompany(IztechUser student, Company company);
+    Optional<InternshipApplication> findByStudentIdAndCompanyId(Long studentId, Long companyId);
+
+    List<InternshipApplication> findByCompanyId(Long id);
+
 }

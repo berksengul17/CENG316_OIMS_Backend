@@ -1,10 +1,12 @@
 package com.ceng316.ceng316_oims_backend.IztechUser;
 
-import com.ceng316.ceng316_oims_backend.Company.Company;
 import com.ceng316.ceng316_oims_backend.Feedback.IztechUserFeedback.IztechUserFeedback;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
-import lombok.*;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.hibernate.Hibernate;
 
 import java.util.List;
@@ -37,9 +39,7 @@ public class IztechUser{
     private String contactNumber;
     private Integer isEligible = 0;
 
-    @ManyToOne
-    @JoinColumn(name = "company_id")
-    private Company company;
+
 
     public IztechUser(String fullName, String email, String password,
                       Role role, String identityNumber, String contactNumber) {
