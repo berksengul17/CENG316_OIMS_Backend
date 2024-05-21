@@ -101,7 +101,7 @@ public class DocumentService {
                 file.getBytes(),
                 file.getContentType(),
                 documentType,
-                DocumentStatus.APPROVED
+                DocumentStatus.PENDING
         ));
     }
 }
