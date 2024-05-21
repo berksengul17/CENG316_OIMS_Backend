@@ -12,12 +12,10 @@ import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicat
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUserRepository;
 import com.ceng316.ceng316_oims_backend.IztechUser.Role;
-import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
-import java.sql.Connection;
 
 @Component
 public class DataInitializer implements CommandLineRunner {

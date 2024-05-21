@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.List;
 
 @RestController
 @AllArgsConstructor
@@ -49,6 +50,10 @@ public class DocumentController {
                 .contentType(MediaType.parseMediaType(document.getContentType()))
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + document.getType() + "\"")
                 .body(document.getContent());
+    }
+    @GetMapping("/applicationFormList")
+    public ResponseEntity<List<Document>> listApplicationForms() {
+        return ResponseEntity.ok(documentService.getApplicationForms());
     }
 
 

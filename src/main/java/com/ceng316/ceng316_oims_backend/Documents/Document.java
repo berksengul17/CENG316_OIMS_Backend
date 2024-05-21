@@ -1,12 +1,10 @@
 package com.ceng316.ceng316_oims_backend.Documents;
 
+import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.springframework.util.MimeType;
-
-import java.sql.Blob;
 
 @Entity
 @Data
@@ -24,6 +22,10 @@ public class Document {
     private DocumentType type;
     @Enumerated(EnumType.STRING)
     private DocumentStatus status;
+
+    @ManyToOne
+    @JoinColumn(name = "iztech_user_id")
+    private IztechUser iztechUser;
 
     public Document(byte[] content, String contentType, DocumentType type, DocumentStatus status) {
         this.content = content;

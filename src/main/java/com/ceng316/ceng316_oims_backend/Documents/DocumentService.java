@@ -13,6 +13,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Service
@@ -103,5 +104,9 @@ public class DocumentService {
                 documentType,
                 DocumentStatus.PENDING
         ));
+    }
+    public List<Document> getApplicationForms() {
+
+        return documentRepository.findAllByType(DocumentType.APPLICATION_FORM).orElseThrow(()-> new IllegalArgumentException("Document not found"));
     }
 }
