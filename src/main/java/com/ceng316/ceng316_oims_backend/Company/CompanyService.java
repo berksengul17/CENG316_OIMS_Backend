@@ -32,19 +32,12 @@ public class CompanyService {
     }
 
     public Company login(Company companyCredentials) {
-        Optional<Company> company = companyRepository.findByEmail(companyCredentials.getEmail());
+        Company company = companyRepository.findByEmail(companyCredentials.getEmail())
+                .orElseThrow(() -> new IllegalArgumentException("Company not found"));
 
-        if (company.isPresent()) {
-            RegistrationStatus status = company.get().getRegistrationStatus();
-            if (status == RegistrationStatus.BANNED) {
-                throw new IllegalArgumentException("Company is " + status.toString().toLowerCase());
+        if (company.getPassword().equals(companyCredentials.getPassword())) {
+            return new Company(company.getId(), company.getEmail(), company.getCompanyName(), company.getRegistrationStatus());
             }
-            if (company.get().getPassword().equals(companyCredentials.getPassword())) {
-                Company companyInfo = company.get();
-                return new Company(companyInfo.getId(), companyInfo.getEmail(), companyInfo.getCompanyName(), companyInfo.getRegistrationStatus());
-            }
-        }
-
         return null;
     }
 
@@ -64,12 +57,11 @@ public class CompanyService {
         return companyRepository.save(company);
     }
 
-    public Company banCompany (Long id) {
+    public void banCompany (Long id) {
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Company not found"));
+        companyRepository.delete(company);
 
-        company.setRegistrationStatus(RegistrationStatus.BANNED);
-        return companyRepository.save(company);
     }
 
     public void resetPassword(Long id, String request) {

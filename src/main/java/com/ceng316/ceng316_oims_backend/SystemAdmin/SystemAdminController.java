@@ -37,8 +37,8 @@ public class SystemAdminController {
     }
 
     @PutMapping("/company/{id}/ban")
-    public Company banCompany(@PathVariable Long id) {
-        return systemAdminService.banCompany(id);
+    public void banCompany(@PathVariable Long id) {
+        systemAdminService.banCompany(id);
     }
 
 

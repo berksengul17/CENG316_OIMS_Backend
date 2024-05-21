@@ -31,7 +31,7 @@ public class SystemAdminService {
         return companyService.disapproveCompany(id);
     }
 
-    public Company banCompany(@PathVariable Long id) {
-        return companyService.banCompany(id);
+    public void banCompany(@PathVariable Long id) {
+        companyService.banCompany(id);
     }
 }

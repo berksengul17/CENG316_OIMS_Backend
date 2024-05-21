@@ -17,6 +17,7 @@ public class Feedback {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected Long id;
     protected String content;
+    protected Integer isSeen = 0;
 
     public Feedback(String content) {
         this.content = content;

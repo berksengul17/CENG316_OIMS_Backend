@@ -71,7 +71,7 @@ public class CompanyController {
         return ResponseEntity.ok(iztechUserService.getStudents(id));
     }
 
-    @PutMapping("/{email}/{companyId}")
+    @PutMapping("intern/{email}/{companyId}")
     public ResponseEntity<?> updateStudentCompanyOwner(@PathVariable String email, @PathVariable Long companyId) {
         try {
             IztechUser iztechUser = iztechUserService.updateStudentCompanyOwner(email, companyId);
