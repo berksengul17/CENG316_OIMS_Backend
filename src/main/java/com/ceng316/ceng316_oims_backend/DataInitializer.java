@@ -56,8 +56,8 @@ public class DataInitializer implements CommandLineRunner {
 
         iztechUserRepository.save(student);
         iztechUserRepository.save(new IztechUser("Buket Öksüzoğlu", "buket@iyte.edu.tr", "123", Role.SUMMER_PRACTICE_COORDINATOR, "13154178426", "0555 555 55 55"));
-        internshipApplicationRepository.save(new InternshipApplication(student,
-                companyRepository.findByEmail("berksengul9a@gmail.com").orElse(null)));
+//        internshipApplicationRepository.save(new InternshipApplication(student,
+//                companyRepository.findByEmail("berksengul9a@gmail.com").orElse(null)));
 
         try (InputStream inputStream = getClass().getResourceAsStream(applicationLetterPath)) {
             if (inputStream == null) {

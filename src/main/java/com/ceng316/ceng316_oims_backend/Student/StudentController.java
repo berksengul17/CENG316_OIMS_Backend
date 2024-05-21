@@ -1,5 +1,6 @@
 package com.ceng316.ceng316_oims_backend.Student;
 
+import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplication;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import com.itextpdf.text.DocumentException;
 import lombok.AllArgsConstructor;
@@ -39,6 +40,18 @@ public class StudentController {
                     .body("Error while creating file:" + e.getMessage());
         }
     }
+
+    @GetMapping("/{studentId}/applied-internships")
+    public ResponseEntity<?> getAppliedInternships(@PathVariable Long studentId) {
+        try {
+            List<InternshipApplication> appliedInternships = studentService.getAppliedInternships(studentId);
+            return ResponseEntity.ok(appliedInternships);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
+    }
+
 
     //FIXME kullanıcı elle mail girince girilen maili kontrol et
     @PostMapping("/{studentId}/apply-announcement/{announcementId}")

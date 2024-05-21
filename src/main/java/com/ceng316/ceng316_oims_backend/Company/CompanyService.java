@@ -1,10 +1,15 @@
 package com.ceng316.ceng316_oims_backend.Company;
 
+import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplication;
+import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicationRepository;
+import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
+import com.ceng316.ceng316_oims_backend.IztechUser.IztechUserRepository;
 import com.ceng316.ceng316_oims_backend.PasswordResetToken.PasswordResetToken;
 import com.ceng316.ceng316_oims_backend.PasswordResetToken.PasswordResetTokenRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.regex.Pattern;
@@ -15,6 +20,7 @@ public class CompanyService {
 
     private final CompanyRepository companyRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
+    private final InternshipApplicationRepository internshipApplicationRepository;
 
     public Company signUp(Company company) {
         boolean isEmailTaken = companyRepository.findByEmail(company.getEmail()).isPresent();
@@ -96,9 +102,24 @@ public class CompanyService {
         return companyRepository.findByRegistrationStatus(RegistrationStatus.PENDING);
     }
 
+    public List<IztechUser> getInterns(Long companyId) {
+        List<InternshipApplication> applications = new ArrayList<>();
+        applications.addAll(internshipApplicationRepository.findByCompanyId(companyId));
+        applications.addAll(internshipApplicationRepository.findByCompanyIdUsingAnnouncement(companyId));
+
+        List<IztechUser> interns = new ArrayList<>();
+        for (InternshipApplication application : applications) {
+            interns.add(application.getStudent());
+        }
+
+        return interns;
+
+    }
+
     private boolean isValidEmail(String emailAddress) {
         return Pattern.compile("[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}")
                 .matcher(emailAddress)
                 .matches();
     }
+
 }

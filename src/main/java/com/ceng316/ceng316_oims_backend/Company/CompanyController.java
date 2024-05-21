@@ -1,6 +1,7 @@
 package com.ceng316.ceng316_oims_backend.Company;
 
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplication;
+import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUserService;
 import com.ceng316.ceng316_oims_backend.MailSender.MailSenderService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -67,11 +68,11 @@ public class CompanyController {
     }
 
     @GetMapping("/interns/{id}")
-    public ResponseEntity<List<InternshipApplication>> getInterns(@PathVariable Long id) {
-        return ResponseEntity.ok(iztechUserService.getStudents(id));
+    public ResponseEntity<List<IztechUser>> getInterns(@PathVariable Long id) {
+        return ResponseEntity.ok(companyService.getInterns(id));
     }
 
-    @PutMapping("intern/{email}/{companyId}")
+    @PutMapping("/intern/{email}/{companyId}")
     public ResponseEntity<?> updateStudentCompanyOwner(@PathVariable String email, @PathVariable Long companyId) {
         try {
             InternshipApplication internshipApplication = iztechUserService.updateStudentCompanyOwner(email, companyId);

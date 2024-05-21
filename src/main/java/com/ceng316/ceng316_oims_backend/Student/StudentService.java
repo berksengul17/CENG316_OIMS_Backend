@@ -45,6 +45,10 @@ public class StudentService {
 
     }
 
+    public List<InternshipApplication> getAppliedInternships(Long studentId) {
+        return internshipApplicationService.getApplicationsByStudentId(studentId);
+    }
+
     public byte[] createEligibleStudentsPdf() throws IOException, DocumentException {
         List<IztechUser> eligibleStudents = getEligibleStudents();
 
@@ -107,4 +111,5 @@ public class StudentService {
             table.addCell(new Phrase(student.getIdentityNumber(), font));
         }
     }
+
 }
