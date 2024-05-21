@@ -3,6 +3,10 @@ package com.ceng316.ceng316_oims_backend;
 import com.ceng316.ceng316_oims_backend.Company.Company;
 import com.ceng316.ceng316_oims_backend.Company.CompanyRepository;
 import com.ceng316.ceng316_oims_backend.Company.RegistrationStatus;
+import com.ceng316.ceng316_oims_backend.Documents.Document;
+import com.ceng316.ceng316_oims_backend.Documents.DocumentRepository;
+import com.ceng316.ceng316_oims_backend.Documents.DocumentStatus;
+import com.ceng316.ceng316_oims_backend.Documents.DocumentType;
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplication;
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicationRepository;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
@@ -12,14 +16,27 @@ import lombok.AllArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
+import java.io.InputStream;
+import java.sql.Connection;
+
 @Component
-@AllArgsConstructor
 public class DataInitializer implements CommandLineRunner {
 
     private final IztechUserRepository iztechUserRepository;
     private final CompanyRepository companyRepository;
     private final InternshipApplicationRepository internshipApplicationRepository;
+    private final DocumentRepository documentRepository;
 
+    private String applicationLetterPath = "/db/files/1_TR_SummerPracticeApplicationLetter2023.docx";
+    private String applicationFormPath = "/db/files/1_EN_SummerPracticeApplicationLetter2023.docx";
+
+    public DataInitializer(IztechUserRepository iztechUserRepository, CompanyRepository companyRepository,
+                           InternshipApplicationRepository internshipApplicationRepository, DocumentRepository documentRepository) {
+        this.iztechUserRepository = iztechUserRepository;
+        this.companyRepository = companyRepository;
+        this.internshipApplicationRepository = internshipApplicationRepository;
+        this.documentRepository = documentRepository;
+    }
 
     @Override
     public void run(String... args) throws Exception {
@@ -41,5 +58,28 @@ public class DataInitializer implements CommandLineRunner {
         iztechUserRepository.save(new IztechUser("Buket Öksüzoğlu", "buket@iyte.edu.tr", "123", Role.SUMMER_PRACTICE_COORDINATOR, "13154178426", "0555 555 55 55"));
         internshipApplicationRepository.save(new InternshipApplication(student,
                 companyRepository.findByEmail("berksengul9a@gmail.com").orElse(null)));
+
+        try (InputStream inputStream = getClass().getResourceAsStream(applicationLetterPath)) {
+            if (inputStream == null) {
+                throw new IllegalArgumentException("File not found: " + applicationLetterPath);
+            }
+            byte[] content = inputStream.readAllBytes();
+            documentRepository.save(new Document(content, "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                                                DocumentType.APPLICATION_LETTER_TEMPLATE, DocumentStatus.APPROVED));
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error inserting document", e);
+        }
+
+        try (InputStream inputStream = getClass().getResourceAsStream(applicationFormPath)) {
+            if (inputStream == null) {
+                throw new IllegalArgumentException("File not found: " + applicationFormPath);
+            }
+            byte[] content = inputStream.readAllBytes();
+            documentRepository.save(new Document(content, "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                                                DocumentType.APPLICATION_FORM_TEMPLATE, DocumentStatus.APPROVED));
+        } catch (Exception e) {
+            throw new IllegalArgumentException("Error inserting document", e);
+        }
+
     }
 }
