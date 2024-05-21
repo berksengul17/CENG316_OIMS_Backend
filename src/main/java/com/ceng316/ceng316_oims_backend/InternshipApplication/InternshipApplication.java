@@ -63,5 +63,7 @@ public class InternshipApplication {
     public InternshipApplication(IztechUser student, Company company) {
         this.student = student;
         this.company = company;
+        this.status = InternshipApplicationStatus.PENDING;
+        this.applicationDate = LocalDate.now(ZoneId.of("Europe/Istanbul"));
     }
 }
