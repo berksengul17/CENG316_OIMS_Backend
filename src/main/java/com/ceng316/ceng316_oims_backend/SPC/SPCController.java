@@ -1,11 +1,12 @@
 package com.ceng316.ceng316_oims_backend.SPC;
 
 import com.ceng316.ceng316_oims_backend.Documents.Document;
+import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplication;
 import lombok.AllArgsConstructor;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -22,5 +23,10 @@ public class SPCController {
     @PutMapping("/document/{id}/disapprove")
     public Document disapproveDocument(@PathVariable Long id) {
         return spcService.disapproveDocument(id);
+    }
+
+    @GetMapping("/application-forms")
+    public ResponseEntity<List<InternshipApplication>> getApplicationForms() {
+        return ResponseEntity.ok(spcService.getApplicationForms());
     }
 }
