@@ -7,9 +7,9 @@ import com.ceng316.ceng316_oims_backend.Documents.DocumentService;
 import com.ceng316.ceng316_oims_backend.Documents.DocumentType;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUserRepository;
-import com.ceng316.ceng316_oims_backend.IztechUser.IztechUserService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.List;
@@ -43,6 +43,16 @@ public class InternshipRegistrationService {
         List<InternshipRegistration> registrations = internshipRegistrationRepository.findAllByCompany(company);
 
         return registrations.stream().map(InternshipRegistration::getStudent).toList();
+    }
+
+    @Transactional
+    public Document getSSIByStudentId(Long studentId) {
+        IztechUser student = iztechUserRepository.findById(studentId)
+                .orElseThrow(() -> new IllegalArgumentException("Student not found"));
+
+        InternshipRegistration registration = internshipRegistrationRepository.findByStudent(student);
+
+        return registration.getSsiCertificate();
     }
 
 }

@@ -1,6 +1,8 @@
 package com.ceng316.ceng316_oims_backend.Student;
 
+import com.ceng316.ceng316_oims_backend.Documents.Document;
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplication;
+import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistrationService;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import com.itextpdf.text.DocumentException;
 import lombok.AllArgsConstructor;
@@ -15,6 +17,7 @@ import java.util.List;
 @AllArgsConstructor
 public class StudentController {
     private final StudentService studentService;
+    private final InternshipRegistrationService internshipRegistrationService;
 
     @GetMapping("/eligible-students")
     public ResponseEntity<List<IztechUser>> getEligibleStudents() {
@@ -50,6 +53,21 @@ public class StudentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(e.getMessage());
         }
+    }
+
+    @GetMapping("/{studentId}/ssi")
+    public ResponseEntity<?> downloadSSI(@PathVariable Long studentId) {
+        try {
+            Document ssi = internshipRegistrationService.getSSIByStudentId(studentId);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(ssi.getContentType()))
+                    .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=SSI_Certificate")
+                    .body(ssi.getContent());
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
+
     }
 
 
