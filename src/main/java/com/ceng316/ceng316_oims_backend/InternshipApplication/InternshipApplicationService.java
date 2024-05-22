@@ -6,6 +6,8 @@ import com.ceng316.ceng316_oims_backend.Company.CompanyRepository;
 import com.ceng316.ceng316_oims_backend.Documents.Document;
 import com.ceng316.ceng316_oims_backend.Documents.DocumentService;
 import com.ceng316.ceng316_oims_backend.Documents.DocumentType;
+import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistration;
+import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistrationRepository;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUserRepository;
 import com.ceng316.ceng316_oims_backend.MailSender.MailSenderService;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +26,7 @@ import java.util.Map;
 public class InternshipApplicationService {
 
     private final InternshipApplicationRepository internshipApplicationRepository;
+    private final InternshipRegistrationRepository internshipRegistrationRepository;
     private final IztechUserRepository iztechUserRepository;
     private final CompanyRepository companyRepository;
     private final DocumentService documentService;
@@ -70,11 +74,11 @@ public class InternshipApplicationService {
                                                                 companyId + " does not exist."));
         Document form = documentService.createDocument(file, DocumentType.APPLICATION_FORM);
 
-        InternshipApplication application = internshipApplicationRepository
+        InternshipRegistration application = internshipRegistrationRepository
                                                 .findByStudentAndCompany(student, company);
 
         application.setApplicationForm(form);
-        internshipApplicationRepository.save(application);
+        internshipRegistrationRepository.save(application);
     }
 
     public Map<String,Document> getApplicationForm(Long companyId, String studentEmail) {
@@ -85,10 +89,20 @@ public class InternshipApplicationService {
                 .orElseThrow(() -> new IllegalArgumentException("Company with id " +
                         companyId + " does not exist."));
 
-        InternshipApplication application = internshipApplicationRepository
+        InternshipRegistration application = internshipRegistrationRepository
                                                 .findByStudentAndCompany(student, company);
 
         return new HashMap<>(Map.of(student.getFullName() + " Application Form",
                                     application.getApplicationForm()));
+    }
+
+    public List<IztechUser> getPendingInternsByCompany(Long companyId) {
+        List<InternshipApplication> applications = new ArrayList<>();
+        applications.addAll(internshipApplicationRepository.findByCompanyId(companyId));
+        applications.addAll(internshipApplicationRepository.findByCompanyIdUsingAnnouncement(companyId));
+
+        return applications.stream()
+                .filter(application -> application.getStatus() == InternshipApplicationStatus.ACCEPTED)
+                .map(InternshipApplication::getStudent).toList();
     }
 }

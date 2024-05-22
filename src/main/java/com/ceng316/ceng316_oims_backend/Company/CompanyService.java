@@ -2,15 +2,16 @@ package com.ceng316.ceng316_oims_backend.Company;
 
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplication;
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicationRepository;
+import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicationService;
+import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistrationService;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import com.ceng316.ceng316_oims_backend.PasswordResetToken.PasswordResetToken;
 import com.ceng316.ceng316_oims_backend.PasswordResetToken.PasswordResetTokenRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.regex.Pattern;
 
 @Service
@@ -19,7 +20,8 @@ public class CompanyService {
 
     private final CompanyRepository companyRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
-    private final InternshipApplicationRepository internshipApplicationRepository;
+    private final InternshipApplicationService internshipApplicationService;
+    private final InternshipRegistrationService internshipRegistrationService;
 
     public Company signUp(Company company) {
         boolean isEmailTaken = companyRepository.findByEmail(company.getEmail()).isPresent();
@@ -101,18 +103,24 @@ public class CompanyService {
         return companyRepository.findByRegistrationStatus(RegistrationStatus.PENDING);
     }
 
-    public List<IztechUser> getInterns(Long companyId) {
-        List<InternshipApplication> applications = new ArrayList<>();
-        applications.addAll(internshipApplicationRepository.findByCompanyId(companyId));
-        applications.addAll(internshipApplicationRepository.findByCompanyIdUsingAnnouncement(companyId));
+    @Transactional
+    public Map<String, List<IztechUser>> getInterns(Long companyId) {
+        Map<String, List<IztechUser>> internsMap = new HashMap<>();
 
-        List<IztechUser> interns = new ArrayList<>();
-        for (InternshipApplication application : applications) {
-            interns.add(application.getStudent());
-        }
+        // Create modifiable copies of the lists
+        List<IztechUser> interns = new ArrayList<>(internshipRegistrationService.getInternsByCompany(companyId));
+        List<IztechUser> pendingInterns = new ArrayList<>(internshipApplicationService.getPendingInternsByCompany(companyId));
 
-        return interns;
+        // Convert interns list to a set for efficient look-up
+        Set<IztechUser> internsSet = new HashSet<>(interns);
 
+        // Remove duplicates from pendingInterns
+        pendingInterns.removeAll(internsSet);
+
+        internsMap.put("accepted", interns);
+        internsMap.put("pending", pendingInterns);
+
+        return internsMap;
     }
 
     private boolean isValidEmail(String emailAddress) {

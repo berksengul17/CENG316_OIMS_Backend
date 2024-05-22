@@ -40,7 +40,7 @@ public class MailSenderService {
 
     private SimpleMailMessage constructResetTokenEmail(
             String contextPath, String token, Company company) {
-        String url = contextPath + "/security/Company/changePassword?token=" + token;
+        String url = contextPath + "/security/company/changePassword?token=" + token;
 
         SimpleMailMessage email = new SimpleMailMessage();
         email.setSubject("Reset Password");

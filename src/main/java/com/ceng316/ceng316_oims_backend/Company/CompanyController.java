@@ -68,8 +68,13 @@ public class CompanyController {
     }
 
     @GetMapping("/interns/{id}")
-    public ResponseEntity<List<IztechUser>> getInterns(@PathVariable Long id) {
-        return ResponseEntity.ok(companyService.getInterns(id));
+    public ResponseEntity<?> getInterns(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(companyService.getInterns(id));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
     }
 
     @PutMapping("/intern/{email}/{companyId}")
