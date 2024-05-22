@@ -39,11 +39,6 @@ public class IztechUser{
     private String grade;
     private String contactNumber;
     private Integer isEligible = 0;
-    @OneToMany(mappedBy = "iztechUser", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<Document> documents;
-
-
 
     public IztechUser(String fullName, String email, String password,
                       Role role, String identityNumber, String contactNumber) {

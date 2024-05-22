@@ -25,7 +25,7 @@ public class DataInitializer implements CommandLineRunner {
     private final DocumentRepository documentRepository;
 
     private String applicationLetterPath = "/db/files/1_TR_SummerPracticeApplicationLetter2023.docx";
-    private String applicationFormPath = "/db/files/1_EN_SummerPracticeApplicationLetter2023.docx";
+    private String applicationFormPath = "/db/files/2_TR_SummerPracticeApplicationForm2023.docx";
 
     public DataInitializer(IztechUserRepository iztechUserRepository, CompanyRepository companyRepository,
                            InternshipApplicationRepository internshipApplicationRepository, DocumentRepository documentRepository) {

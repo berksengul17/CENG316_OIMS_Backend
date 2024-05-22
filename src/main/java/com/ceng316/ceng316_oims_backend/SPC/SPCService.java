@@ -4,6 +4,8 @@ import com.ceng316.ceng316_oims_backend.Documents.Document;
 import com.ceng316.ceng316_oims_backend.Documents.DocumentService;
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplication;
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicationRepository;
+import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistration;
+import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistrationRepository;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -18,7 +20,7 @@ import java.util.List;
 public class SPCService {
 
     private final DocumentService documentService;
-    private final InternshipApplicationRepository internshipApplicationRepository;
+    private final InternshipRegistrationRepository internshipRegistrationRepository;
 
     public Document approveDocument(@PathVariable Long id) {
         return documentService.approveDocument(id);
@@ -29,17 +31,17 @@ public class SPCService {
     }
 
     @Transactional
-    public List<InternshipApplication> getApplicationForms() {
-        List<InternshipApplication> applicationsWithForm = new ArrayList<>();
+    public List<InternshipRegistration> getApplicationForms() {
+        List<InternshipRegistration> registrationsWithFOrms = new ArrayList<>();
 
-        List<InternshipApplication> allApplications = internshipApplicationRepository.findAll();
-        for (InternshipApplication application : allApplications) {
-            if (application.getApplicationForm() != null) {
-                applicationsWithForm.add(application);
+        List<InternshipRegistration> allRegistrations = internshipRegistrationRepository.findAll();
+        for (InternshipRegistration registration : allRegistrations) {
+            if (registration.getApplicationForm() != null) {
+                registrationsWithFOrms.add(registration);
             }
         }
 
-        return applicationsWithForm;
+        return registrationsWithFOrms;
     }
 
 }

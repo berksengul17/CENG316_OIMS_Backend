@@ -23,10 +23,6 @@ public class Document {
     @Enumerated(EnumType.STRING)
     private DocumentStatus status;
 
-    @ManyToOne
-    @JoinColumn(name = "iztech_user_id")
-    private IztechUser iztechUser;
-
     public Document(byte[] content, String contentType, DocumentType type, DocumentStatus status) {
         this.content = content;
         this.contentType = contentType;

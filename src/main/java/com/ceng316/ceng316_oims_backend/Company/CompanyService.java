@@ -103,6 +103,7 @@ public class CompanyService {
         return companyRepository.findByRegistrationStatus(RegistrationStatus.PENDING);
     }
 
+    //TODO buraya çok detaylı bakmadım inceleyelim
     @Transactional
     public Map<String, List<IztechUser>> getInterns(Long companyId) {
         Map<String, List<IztechUser>> internsMap = new HashMap<>();

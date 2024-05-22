@@ -25,8 +25,11 @@ public class InternshipRegistration {
     @JoinColumn(name = "company_id", referencedColumnName = "id")
     private Company company;
     @OneToOne
-    @JoinColumn(name = "document_id", referencedColumnName = "documentId")
+    @JoinColumn(name = "application_form_id", referencedColumnName = "documentId")
     private Document applicationForm;
+    @OneToOne
+    @JoinColumn(name = "ssi_id", referencedColumnName = "documentId")
+    private Document ssiCertificate;
 
     public InternshipRegistration(IztechUser student, Company company, Document applicationForm) {
         this.student = student;
