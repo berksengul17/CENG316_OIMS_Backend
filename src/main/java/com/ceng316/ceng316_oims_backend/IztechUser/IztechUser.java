@@ -1,6 +1,5 @@
 package com.ceng316.ceng316_oims_backend.IztechUser;
 
-import com.ceng316.ceng316_oims_backend.Documents.Document;
 import com.ceng316.ceng316_oims_backend.Feedback.IztechUserFeedback.IztechUserFeedback;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

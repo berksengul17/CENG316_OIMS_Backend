@@ -52,18 +52,6 @@ public class InternshipApplicationService {
         return application;
     }
 
-    public InternshipApplication createInternshipApplication(IztechUser student, Company company) throws IOException {
-        Document applicationLetter =
-                documentService.prepareDocument(student, DocumentType.APPLICATION_LETTER_TEMPLATE);
-
-        InternshipApplication application = new InternshipApplication(student, company, applicationLetter);
-
-        internshipApplicationRepository.save(application);
-        mailSenderService.sendInternshipApplicationEmail(application);
-
-        return application;
-    }
-
     public void uploadApplicationForm(Long companyId, String studentEmail,
                                MultipartFile file) throws IOException {
         IztechUser student = iztechUserRepository.findByEmail(studentEmail)
@@ -96,13 +84,13 @@ public class InternshipApplicationService {
                                     application.getApplicationForm()));
     }
 
-    public List<IztechUser> getPendingInternsByCompany(Long companyId) {
-        List<InternshipApplication> applications = new ArrayList<>();
-        applications.addAll(internshipApplicationRepository.findByCompanyId(companyId));
-        applications.addAll(internshipApplicationRepository.findByCompanyIdUsingAnnouncement(companyId));
-
-        return applications.stream()
-                .filter(application -> application.getStatus() == InternshipApplicationStatus.ACCEPTED)
-                .map(InternshipApplication::getStudent).toList();
-    }
+    // TODO bu ya silince ya da düzeltilcek
+//    public List<IztechUser> getInternshipApplicationsByCompany(Long companyId) {
+//        List<InternshipApplication> applications = new ArrayList<>();
+//        applications.addAll(internshipApplicationRepository.findByCompanyIdUsingAnnouncement(companyId));
+//
+//        return applications.stream()
+//                .filter(application -> application.getStatus() == InternshipApplicationStatus.ACCEPTED)
+//                .map(InternshipApplication::getStudent).toList();
+//    }
 }

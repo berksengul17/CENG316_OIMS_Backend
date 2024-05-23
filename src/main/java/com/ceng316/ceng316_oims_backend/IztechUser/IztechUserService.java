@@ -1,7 +1,5 @@
 package com.ceng316.ceng316_oims_backend.IztechUser;
 
-import com.ceng316.ceng316_oims_backend.Announcements.AnnouncementRepository;
-import com.ceng316.ceng316_oims_backend.Company.CompanyRepository;
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplication;
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicationRepository;
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicationStatus;
@@ -17,9 +15,7 @@ import java.util.Optional;
 public class IztechUserService {
 
     private final IztechUserRepository iztechUserRepository;
-    private final CompanyRepository companyRepository;
     private final InternshipApplicationRepository internshipApplicationRepository;
-    private final AnnouncementRepository announcementRepository;
 
     public IztechUser login(IztechUser iztechUserCredentials) {
         Optional<IztechUser> optional_iztech_user = Optional.empty();
@@ -37,27 +33,25 @@ public class IztechUserService {
 
         return null;
     }
-    public List<InternshipApplication> getStudents(Long id) {
-        return internshipApplicationRepository.findByCompanyId(id);
-    }
 
     @Transactional
-    public InternshipApplication updateStudentCompanyOwner(String email, Long companyId) {
-        IztechUser student = iztechUserRepository.findByEmail(email)
-                .orElseThrow(()-> new IllegalArgumentException("Student not found"));
+    public InternshipApplication updateStudentCompanyOwner(String studentEmail, Long companyId) {
+        List<InternshipApplication> internshipApplications = internshipApplicationRepository
+                .findByCompanyIdUsingAnnouncement(companyId);
 
-        Optional<InternshipApplication> internshipApplication = internshipApplicationRepository
-                .findByStudentIdAndCompanyId(student.getId(), companyId);
+        // Company has no internship applications
+        if (internshipApplications.isEmpty()) {
+            return null;
+        }
 
-        if (internshipApplication.isEmpty()) {
-            internshipApplication = internshipApplicationRepository.findByStudentEmailAndCompanyId(email, companyId);
-            if (internshipApplication.isEmpty()) {
-                throw new IllegalArgumentException("Internship application not found");
+        for (InternshipApplication application : internshipApplications) {
+            if (application.getStudent().getEmail().equals(studentEmail)) {
+                application.setStatus(InternshipApplicationStatus.ACCEPTED);
+                return internshipApplicationRepository.save(application);
             }
         }
 
-        internshipApplication.get().setStatus(InternshipApplicationStatus.ACCEPTED);
-        return internshipApplicationRepository.save(internshipApplication.get());
-        }
+        throw new IllegalArgumentException("No internship application matching with this student email");
     }
+}
 

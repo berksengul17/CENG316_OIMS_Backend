@@ -84,17 +84,4 @@ public class StudentController {
                     .body("Error while filling document: " + e.getMessage());
         }
     }
-
-    @PostMapping("/{studentId}/apply-company")
-    public ResponseEntity<?> applyToCompany(@PathVariable Long studentId, @RequestParam String companyEmail) {
-        try {
-            return ResponseEntity.ok(studentService.applyToCompany(studentId, companyEmail));
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(e.getMessage());
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body("Error while filling document: " + e.getMessage());
-        }
-    }
 }

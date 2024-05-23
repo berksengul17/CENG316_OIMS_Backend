@@ -2,11 +2,8 @@ package com.ceng316.ceng316_oims_backend.SPC;
 
 import com.ceng316.ceng316_oims_backend.Documents.Document;
 import com.ceng316.ceng316_oims_backend.Documents.DocumentService;
-import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplication;
-import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicationRepository;
 import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistration;
 import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistrationRepository;
-import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

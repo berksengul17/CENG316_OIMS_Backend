@@ -1,7 +1,6 @@
 package com.ceng316.ceng316_oims_backend.InternshipApplication;
 
 import com.ceng316.ceng316_oims_backend.Announcements.Announcement;
-import com.ceng316.ceng316_oims_backend.Company.Company;
 import com.ceng316.ceng316_oims_backend.Documents.Document;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import jakarta.persistence.*;
@@ -29,14 +28,8 @@ public class InternshipApplication {
     @JoinColumn(name = "announcement_id", referencedColumnName = "announcementId")
     private Announcement announcement;
     @ManyToOne
-    @JoinColumn(name = "company_id", referencedColumnName = "id")
-    private Company company;
-    @ManyToOne
     @JoinColumn(name = "application_letter_id", referencedColumnName = "documentId")
     private Document applicationLetter;
-    @ManyToOne
-    @JoinColumn(name="application_form_id", referencedColumnName = "documentId")
-    private Document applicationForm;
     @Enumerated(EnumType.STRING)
     private InternshipApplicationStatus status;
     private LocalDate applicationDate;
@@ -47,22 +40,6 @@ public class InternshipApplication {
         this.student = student;
         this.announcement = announcement;
         this.applicationLetter = applicationLetter;
-        this.status = InternshipApplicationStatus.PENDING;
-        this.applicationDate = LocalDate.now(ZoneId.of("Europe/Istanbul"));
-    }
-
-    public InternshipApplication(IztechUser student, Company company,
-                                 Document applicationLetter) {
-        this.student = student;
-        this.company = company;
-        this.applicationLetter = applicationLetter;
-        this.status = InternshipApplicationStatus.PENDING;
-        this.applicationDate = LocalDate.now(ZoneId.of("Europe/Istanbul"));
-    }
-
-    public InternshipApplication(IztechUser student, Company company) {
-        this.student = student;
-        this.company = company;
         this.status = InternshipApplicationStatus.PENDING;
         this.applicationDate = LocalDate.now(ZoneId.of("Europe/Istanbul"));
     }

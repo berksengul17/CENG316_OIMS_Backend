@@ -1,7 +1,5 @@
 package com.ceng316.ceng316_oims_backend.Company;
 
-import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplication;
-import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicationRepository;
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicationService;
 import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistrationService;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
@@ -11,7 +9,8 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
@@ -103,25 +102,9 @@ public class CompanyService {
         return companyRepository.findByRegistrationStatus(RegistrationStatus.PENDING);
     }
 
-    //TODO buraya çok detaylı bakmadım inceleyelim
     @Transactional
-    public Map<String, List<IztechUser>> getInterns(Long companyId) {
-        Map<String, List<IztechUser>> internsMap = new HashMap<>();
-
-        // Create modifiable copies of the lists
-        List<IztechUser> interns = new ArrayList<>(internshipRegistrationService.getInternsByCompany(companyId));
-        List<IztechUser> pendingInterns = new ArrayList<>(internshipApplicationService.getPendingInternsByCompany(companyId));
-
-        // Convert interns list to a set for efficient look-up
-        Set<IztechUser> internsSet = new HashSet<>(interns);
-
-        // Remove duplicates from pendingInterns
-        pendingInterns.removeAll(internsSet);
-
-        internsMap.put("accepted", interns);
-        internsMap.put("pending", pendingInterns);
-
-        return internsMap;
+    public List<IztechUser> getInterns(Long companyId) {
+        return internshipRegistrationService.getInternsByCompany(companyId);
     }
 
     private boolean isValidEmail(String emailAddress) {

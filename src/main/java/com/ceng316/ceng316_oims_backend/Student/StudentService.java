@@ -2,7 +2,6 @@ package com.ceng316.ceng316_oims_backend.Student;
 
 import com.ceng316.ceng316_oims_backend.Announcements.Announcement;
 import com.ceng316.ceng316_oims_backend.Announcements.AnnouncementRepository;
-import com.ceng316.ceng316_oims_backend.Company.Company;
 import com.ceng316.ceng316_oims_backend.Company.CompanyRepository;
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplication;
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicationService;
@@ -79,15 +78,6 @@ public class StudentService {
                 .orElseThrow(() -> new IllegalArgumentException("Announcement with id " + announcementId + "not found"));
 
         return internshipApplicationService.createInternshipApplication(student, announcement);
-    }
-
-    public InternshipApplication applyToCompany(Long studentId, String companyEmail) throws IOException {
-        IztechUser student = iztechUserRepository.findById(studentId)
-                .orElseThrow(() -> new IllegalArgumentException("Student not found"));
-        Company company = companyRepository.findByEmail(companyEmail)
-                .orElseThrow(() -> new IllegalArgumentException("Company not found"));
-
-        return internshipApplicationService.createInternshipApplication(student, company);
     }
 
     private void addTableHeader(PdfPTable table, Font font) {
