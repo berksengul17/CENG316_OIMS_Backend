@@ -71,4 +71,9 @@ public class AnnouncementController {
     public ResponseEntity<List<Announcement>> getAnnouncementsForCompany(@PathVariable Long id) {
         return ResponseEntity.ok(announcementService.getAnnouncementsForCompany(id));
     }
+    @PutMapping("/delete/{id}")
+    public void deleteAnnouncement(@PathVariable Long id) {
+        announcementService.deleteAnnouncement(id);
+    }
+
 }

@@ -9,6 +9,7 @@ import com.ceng316.ceng316_oims_backend.Documents.DocumentType;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -107,4 +108,9 @@ public class AnnouncementService {
         return null;
     }
 
+    public void deleteAnnouncement(@PathVariable Long id) {
+        Announcement announcement = announcementRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Announcement not found"));
+        announcementRepository.delete(announcement);
+    }
 }
