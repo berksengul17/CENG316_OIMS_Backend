@@ -24,10 +24,13 @@ public class CompanyService {
 
     public Company signUp(Company company) {
         boolean isEmailTaken = companyRepository.findByEmail(company.getEmail()).isPresent();
+        boolean isNameTaken = companyRepository.findByName(company.getCompanyName()).isPresent();
 
         if (isEmailTaken) {
             throw new IllegalArgumentException("Email is already taken");
-        } else if (!isValidEmail(company.getEmail())) {
+        } else if(isNameTaken) {
+            throw new IllegalArgumentException("Name is already taken");
+        }else if (!isValidEmail(company.getEmail())) {
             throw new IllegalArgumentException("Invalid email address");
         } else if (company.getCompanyName().length() > 30 || company.getCompanyName().length() < 2) {
             throw new IllegalArgumentException("Company name should be between 2 and 30 characters");
@@ -111,6 +114,29 @@ public class CompanyService {
         return Pattern.compile("[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}")
                 .matcher(emailAddress)
                 .matches();
+    }
+
+    public Company updateCompanyNameAndMail(String companyMail, String name, Long companyId) {
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new IllegalArgumentException("Company not found"));
+
+        boolean isEmailTaken = companyRepository.findByEmail(companyMail).isPresent();
+        boolean isNameTaken = companyRepository.findByName(name).isPresent();
+
+        if (isEmailTaken) {
+            throw new IllegalArgumentException("Email is already taken");
+        } else if(isNameTaken) {
+            throw new IllegalArgumentException("Name is already taken");
+        }else if (!isValidEmail(company.getEmail())) {
+            throw new IllegalArgumentException("Invalid email address");
+        } else if (company.getCompanyName().length() > 30 || company.getCompanyName().length() < 2) {
+            throw new IllegalArgumentException("Company name should be between 2 and 30 characters");
+        }
+
+
+        company.setEmail(companyMail);
+        company.setCompanyName(name);
+        return companyRepository.save(company);
     }
 
 }

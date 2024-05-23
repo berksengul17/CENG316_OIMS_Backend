@@ -70,4 +70,19 @@ public class FeedbackController {
                     .body(e.getMessage());
         }
     }
+
+    @PutMapping("iztech-user/hide/{id}")
+    public void hideIztechUserFeedback(@PathVariable Long id) {
+        feedbackService.hideIztechUserFeedback(id);
+    }
+
+    @PutMapping("company/hide/{id}")
+    public void hideCompanyFeedback(@PathVariable Long id) {
+        feedbackService.hideCompanyFeedback(id);
+    }
+    @PutMapping("announcement/hide/{id}")
+    public void hideAnnouncementFeedback(@PathVariable Long id) {
+        feedbackService.hideIztechUserFeedback(id);
+    }
+
 }

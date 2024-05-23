@@ -18,8 +18,10 @@ public class Feedback {
     protected Long id;
     protected String content;
     protected Integer isSeen = 0;
+    protected FeedbackType feedbackType;
 
-    public Feedback(String content) {
+    public Feedback(String content,FeedbackType feedbackType) {
         this.content = content;
+        this.feedbackType = feedbackType;
     }
 }

@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface CompanyFeedbackRepository extends JpaRepository<CompanyFeedback, Long> {
-    List<CompanyFeedback> findAllByCompany(Company company);
+    List<CompanyFeedback> findAllByCompanyAndIsSeen(Company company, int isSeen);
 }

@@ -86,6 +86,16 @@ public class CompanyController {
         }
     }
 
+    @PutMapping("changeInformation/{id}")
+    public ResponseEntity<?> updateCompanyMail(@PathVariable String email, @PathVariable String name, @PathVariable Long companyId) {
+        try {
+            Company company = companyService.updateCompanyNameAndMail(email, name, companyId);
+            return ResponseEntity.ok(company);
+        } catch (Exception e)  {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
 }
 
 
