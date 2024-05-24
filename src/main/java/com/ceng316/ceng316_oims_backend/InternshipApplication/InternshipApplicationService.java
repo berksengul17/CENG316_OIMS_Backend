@@ -103,7 +103,7 @@ public class InternshipApplicationService {
             throw new IllegalStateException("Company with id " + companyId + " does not exist.");
         }
 
-        return internshipApplicationRepository.findByCompanyIdAndApplicationStatusUsingAnnouncement(companyId, InternshipApplicationStatus.PENDING)
+        return internshipApplicationRepository.findByCompanyIdAndStatusUsingAnnouncement(companyId, InternshipApplicationStatus.PENDING)
                 .orElseThrow(()-> new IllegalArgumentException("Application not found by company Id"));
     }
 
