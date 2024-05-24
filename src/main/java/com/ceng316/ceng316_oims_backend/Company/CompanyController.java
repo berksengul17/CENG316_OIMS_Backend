@@ -71,6 +71,11 @@ public class CompanyController {
         return ResponseEntity.ok(companyService.getCompanies());
     }
 
+    @GetMapping("/approvedList")
+    public ResponseEntity<List<Company>> listApprovedCompanies() {
+        return ResponseEntity.ok(companyService.getApprovedCompanies());
+    }
+
     @GetMapping("/interns/{id}")
     public ResponseEntity<?> getInterns(@PathVariable Long id) {
         try {

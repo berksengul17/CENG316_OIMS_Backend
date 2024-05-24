@@ -107,6 +107,10 @@ public class CompanyService {
         return companyRepository.findByRegistrationStatus(RegistrationStatus.PENDING);
     }
 
+    public List<Company> getApprovedCompanies() {
+        return companyRepository.findByRegistrationStatus(RegistrationStatus.APPROVED);
+    }
+
     @Transactional
     public List<IztechUser> getInterns(Long companyId) {
         return internshipRegistrationService.getInternsByCompany(companyId);
