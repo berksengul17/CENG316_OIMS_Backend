@@ -56,8 +56,13 @@ public class CompanyController {
             throw new IllegalArgumentException("Company with email" + email + "is not found");
         }
         String token = UUID.randomUUID().toString();
-        companyService.createPasswordResetTokenForCompany(company, token);
-        mailSenderService.sendResetTokenEmail(request, token, company);
+        try {
+            mailSenderService.sendResetTokenEmail(request, token, company);
+            companyService.createPasswordResetTokenForCompany(company, token);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to send email.");
+        }
         return ResponseEntity.ok("You should receive a password reset email shortly");
     }
 

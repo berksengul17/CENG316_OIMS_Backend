@@ -46,8 +46,12 @@ public class InternshipApplicationService {
 
         InternshipApplication application = new InternshipApplication(student, announcement, applicationLetter);
 
-        internshipApplicationRepository.save(application);
-        mailSenderService.sendInternshipApplicationEmail(application);
+        try {
+            mailSenderService.sendInternshipApplicationEmail(application);
+            internshipApplicationRepository.save(application);
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to send email.");
+        }
 
         return application;
     }
