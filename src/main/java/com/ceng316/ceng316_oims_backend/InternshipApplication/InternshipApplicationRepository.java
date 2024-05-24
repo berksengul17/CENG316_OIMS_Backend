@@ -1,7 +1,5 @@
 package com.ceng316.ceng316_oims_backend.InternshipApplication;
 
-import com.ceng316.ceng316_oims_backend.Company.Company;
-import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -15,6 +13,7 @@ import java.util.Optional;
 public interface InternshipApplicationRepository extends JpaRepository<InternshipApplication, Long> {
     @Transactional
     List<InternshipApplication> findAllByStudentId(Long studentId);
+
     @Query("SELECT ia FROM InternshipApplication ia " +
             "JOIN ia.student s " +
             "JOIN ia.announcement a " +
@@ -29,5 +28,8 @@ public interface InternshipApplicationRepository extends JpaRepository<Internshi
             "JOIN ia.announcement a " +
             "JOIN a.company c " +
             "WHERE c.id = :companyId")
-    List<InternshipApplication> findByCompanyIdUsingAnnouncement(@Param("companyId") Long companyId);
+    @Transactional
+    Optional<List<InternshipApplication>> findByCompanyIdUsingAnnouncement(@Param("companyId") Long companyId);
+
+
 }

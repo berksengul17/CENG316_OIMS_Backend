@@ -1,5 +1,6 @@
 package com.ceng316.ceng316_oims_backend.Company;
 
+import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplication;
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicationService;
 import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistrationService;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
@@ -8,6 +9,7 @@ import com.ceng316.ceng316_oims_backend.PasswordResetToken.PasswordResetTokenRep
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,6 +22,7 @@ public class CompanyService {
     private final CompanyRepository companyRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final InternshipRegistrationService internshipRegistrationService;
+    private final InternshipApplicationService internshipApplicationService;
 
     public Company signUp(Company company) {
         boolean isEmailTaken = companyRepository.findByEmail(company.getEmail()).isPresent();
@@ -135,5 +138,17 @@ public class CompanyService {
         return Pattern.compile("[a-z0-9._%+-]+@[a-z0-9.-]+\\.[a-z]{2,3}")
                 .matcher(emailAddress)
                 .matches();
+    }
+    @Transactional
+    public List<InternshipApplication> getCompanyApplications(Long companyId) {
+        return internshipApplicationService.getApplicationsByCompanyId(companyId);
+    }
+
+    public InternshipApplication approveApplicant(@PathVariable Long id) {
+        return internshipApplicationService.approveApplicant(id);
+    }
+
+    public InternshipApplication disapproveApplicant(@PathVariable Long id) {
+        return internshipApplicationService.disapproveApplicant(id);
     }
 }

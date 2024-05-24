@@ -37,7 +37,8 @@ public class IztechUserService {
     @Transactional
     public InternshipApplication updateStudentCompanyOwner(String studentEmail, Long companyId) {
         List<InternshipApplication> internshipApplications = internshipApplicationRepository
-                .findByCompanyIdUsingAnnouncement(companyId);
+                .findByCompanyIdUsingAnnouncement(companyId)
+                .orElseThrow(()-> new IllegalArgumentException("Application not found while updating student company owning"));
 
         // Company has no internship applications
         if (internshipApplications.isEmpty()) {

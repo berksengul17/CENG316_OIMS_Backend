@@ -91,7 +91,7 @@ public class CompanyController {
         }
     }
 
-    @PutMapping("changeInformation/{companyId}")
+    @PutMapping("/changeInformation/{companyId}")
     public ResponseEntity<?> updateCompanyMail(@PathVariable Long companyId, @RequestParam String email, @RequestParam String name) {
         try {
             Company company = companyService.updateCompanyNameAndMail(email, name, companyId);
@@ -100,6 +100,28 @@ public class CompanyController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @GetMapping("/{companyId}/applied-internships")
+    public ResponseEntity<?> getCompanyApplicants(@PathVariable Long companyId) {
+        try {
+            List<InternshipApplication> appliedInternships = companyService.getCompanyApplications(companyId);
+            return ResponseEntity.ok(appliedInternships);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/applicant/{id}/approve")
+    public InternshipApplication approveApplicant(@PathVariable Long id) {
+        return companyService.approveApplicant(id);
+    }
+
+    @PutMapping("/applicant/{id}/disapprove")
+    public InternshipApplication disapproveApplicant(@PathVariable Long id) {
+        return companyService.disapproveApplicant(id);
+    }
+
 
 }
 

@@ -13,10 +13,10 @@ import com.ceng316.ceng316_oims_backend.IztechUser.IztechUserRepository;
 import com.ceng316.ceng316_oims_backend.MailSender.MailSenderService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -97,4 +97,29 @@ public class InternshipApplicationService {
 //                .filter(application -> application.getStatus() == InternshipApplicationStatus.ACCEPTED)
 //                .map(InternshipApplication::getStudent).toList();
 //    }
+    @Transactional
+    public List<InternshipApplication> getApplicationsByCompanyId(Long companyId) {
+        if (!companyRepository.existsById(companyId)) {
+            throw new IllegalStateException("Company with id " + companyId + " does not exist.");
+        }
+
+        return internshipApplicationRepository.findByCompanyIdUsingAnnouncement(companyId)
+                .orElseThrow(()-> new IllegalArgumentException("Application not found by company Id"));
+    }
+
+    public InternshipApplication approveApplicant(Long id) {
+        InternshipApplication internshipApplication = internshipApplicationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Internship Application not found while approving applicant"));
+
+        internshipApplication.setStatus(InternshipApplicationStatus.ACCEPTED);
+        return internshipApplicationRepository.save(internshipApplication);
+    }
+
+    public InternshipApplication disapproveApplicant(Long id) {
+        InternshipApplication internshipApplication = internshipApplicationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Internship Application not found while approving applicant"));
+
+        internshipApplication.setStatus(InternshipApplicationStatus.REJECTED);
+        return internshipApplicationRepository.save(internshipApplication);
+    }
 }
