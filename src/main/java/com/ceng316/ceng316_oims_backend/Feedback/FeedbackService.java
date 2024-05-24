@@ -14,6 +14,7 @@ import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -35,11 +36,18 @@ public class FeedbackService {
         return announcementFeedbackRepository.save(new AnnouncementFeedback(content, announcement));
     }
 
+    @Transactional
     public List<AnnouncementFeedback> getAnnouncementFeedback(Long companyId) {
         Announcement announcement = announcementRepository.findByCompanyId(companyId)
                 .orElseThrow(() -> new IllegalArgumentException("Announcement not found"));
 
-        return announcementFeedbackRepository.findAllByAnnouncementAndIsSeen(announcement, 0);
+        List<AnnouncementFeedback> announcementFeedbackList =
+                announcementFeedbackRepository.findAllByAnnouncementAndIsSeen(announcement, 0);
+
+        announcementFeedbackList
+                .forEach(announcementFeedback -> announcementFeedback.setFeedbackType(FeedbackType.ANNOUNCEMENT));
+
+        return announcementFeedbackList;
     }
 
     public CompanyFeedback addCompanyFeedback(Long companyId, String content){
