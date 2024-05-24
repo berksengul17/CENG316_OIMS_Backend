@@ -3,6 +3,7 @@ package com.ceng316.ceng316_oims_backend.Announcements;
 import com.ceng316.ceng316_oims_backend.Company.Company;
 import com.ceng316.ceng316_oims_backend.Documents.Document;
 import com.ceng316.ceng316_oims_backend.Feedback.AnnouncementFeedback.AnnouncementFeedback;
+import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplication;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -35,6 +36,9 @@ public class Announcement {
     @OneToMany(mappedBy = "announcement", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     private List<AnnouncementFeedback> feedbacks;
+    @OneToMany(mappedBy = "announcement", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
+    private List<InternshipApplication> internshipApplications;
 
     public Announcement(String title, LocalDate deadline, Document document, Company company) {
         this.title = title;
