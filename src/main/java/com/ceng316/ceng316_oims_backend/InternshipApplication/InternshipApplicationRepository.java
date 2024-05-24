@@ -30,6 +30,8 @@ public interface InternshipApplicationRepository extends JpaRepository<Internshi
             "WHERE c.id = :companyId")
     @Transactional
     Optional<List<InternshipApplication>> findByCompanyIdUsingAnnouncement(@Param("companyId") Long companyId);
+    @Transactional
+    Optional<List<InternshipApplication>> findByCompanyIdAndApplicationStatusUsingAnnouncement(@Param("companyId") Long companyId, InternshipApplicationStatus status);
 
 
 }
