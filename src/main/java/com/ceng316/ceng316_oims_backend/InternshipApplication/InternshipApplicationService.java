@@ -122,4 +122,15 @@ public class InternshipApplicationService {
         internshipApplication.setStatus(InternshipApplicationStatus.REJECTED);
         return internshipApplicationRepository.save(internshipApplication);
     }
+
+    public void rejectAcceptedCompanyApplications(Long studentId, Long announcementId) {
+        List<InternshipApplication> applications = internshipApplicationRepository.findAllByStudentId(studentId);
+
+        for (InternshipApplication application : applications) {
+            if (!application.getAnnouncement().getAnnouncementId().equals(announcementId)) {
+                application.setStatus(InternshipApplicationStatus.REJECTED);
+                internshipApplicationRepository.save(application);
+            }
+        }
+    }
 }

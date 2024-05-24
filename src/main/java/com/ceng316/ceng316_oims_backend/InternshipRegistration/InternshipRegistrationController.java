@@ -17,10 +17,13 @@ public class InternshipRegistrationController {
     private final InternshipRegistrationService internshipRegistrationService;
 
     // TODO Request param burda iyi mi bilmiyorum
+    // FIXME
     @PostMapping("/register")
-    public ResponseEntity<?> registerToCompany(@RequestParam Long studentId, @RequestParam String companyEmail) {
+    public ResponseEntity<?> registerToCompany(@RequestParam Long studentId,
+                                               @RequestParam Long announcementId) {
         try {
-            InternshipRegistration newRegistration = internshipRegistrationService.registerToCompany(studentId, companyEmail);
+            InternshipRegistration newRegistration = internshipRegistrationService
+                    .registerToCompany(studentId, announcementId);
             return ResponseEntity.ok(newRegistration);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(500).body(e.getMessage());

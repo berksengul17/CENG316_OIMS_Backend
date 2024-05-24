@@ -1,7 +1,9 @@
 package com.ceng316.ceng316_oims_backend.Company;
 
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplication;
+import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicationRepository;
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicationService;
+import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistration;
 import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistrationService;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import com.ceng316.ceng316_oims_backend.PasswordResetToken.PasswordResetToken;
@@ -23,6 +25,7 @@ public class CompanyService {
     private final PasswordResetTokenRepository passwordResetTokenRepository;
     private final InternshipRegistrationService internshipRegistrationService;
     private final InternshipApplicationService internshipApplicationService;
+    private final InternshipApplicationRepository internshipApplicationRepository;
 
     public Company signUp(Company company) {
         boolean isEmailTaken = companyRepository.findByEmail(company.getEmail()).isPresent();
@@ -30,9 +33,9 @@ public class CompanyService {
 
         if (isEmailTaken) {
             throw new IllegalArgumentException("Email is already taken");
-        } else if(isNameTaken) {
+        } else if (isNameTaken) {
             throw new IllegalArgumentException("Name is already taken");
-        }else if (!isValidEmail(company.getEmail())) {
+        } else if (!isValidEmail(company.getEmail())) {
             throw new IllegalArgumentException("Invalid email address");
         } else if (company.getCompanyName().length() > 30 || company.getCompanyName().length() < 2) {
             throw new IllegalArgumentException("Company name should be between 2 and 30 characters");
@@ -48,7 +51,7 @@ public class CompanyService {
 
         if (company.getPassword().equals(companyCredentials.getPassword())) {
             return new Company(company.getId(), company.getEmail(), company.getCompanyName(), company.getRegistrationStatus());
-            }
+        }
         return null;
     }
 
@@ -60,7 +63,7 @@ public class CompanyService {
         return companyRepository.save(company);
     }
 
-    public Company disapproveCompany (Long id) {
+    public Company disapproveCompany(Long id) {
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Company not found"));
 
@@ -68,7 +71,7 @@ public class CompanyService {
         return companyRepository.save(company);
     }
 
-    public void banCompany (Long id) {
+    public void banCompany(Long id) {
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Company not found"));
         companyRepository.delete(company);
@@ -95,10 +98,12 @@ public class CompanyService {
 
         passwordResetTokenRepository.save(new PasswordResetToken(token, company));
     }
+
     public void changeCompanyPassword(Company company, String password) {
         company.setPassword(password);
         companyRepository.save(company);
     }
+
     public Optional<Company> getCompanyByPasswordResetToken(String token) {
         return Optional.ofNullable(passwordResetTokenRepository.findByToken(token).getCompany());
     }
@@ -112,7 +117,7 @@ public class CompanyService {
     }
 
     @Transactional
-    public List<IztechUser> getInterns(Long companyId) {
+    public List<InternshipRegistration> getInterns(Long companyId) {
         return internshipRegistrationService.getInternsByCompany(companyId);
     }
 
@@ -125,7 +130,7 @@ public class CompanyService {
 
         if (!company.getEmail().equals(companyMail) && isEmailTaken) {
             throw new IllegalArgumentException("Email is already taken");
-        } else if(!company.getCompanyName().equals(name)  && isNameTaken) {
+        } else if (!company.getCompanyName().equals(name) && isNameTaken) {
             throw new IllegalArgumentException("Name is already taken");
         } else if (!isValidEmail(company.getEmail())) {
             throw new IllegalArgumentException("Invalid email address");
@@ -143,13 +148,22 @@ public class CompanyService {
                 .matcher(emailAddress)
                 .matches();
     }
+
     @Transactional
     public List<InternshipApplication> getCompanyApplications(Long companyId) {
         return internshipApplicationService.getApplicationsByCompanyId(companyId);
     }
 
-    public InternshipApplication approveApplicant(@PathVariable Long id) {
-        return internshipApplicationService.approveApplicant(id);
+    public InternshipRegistration approveApplicant(@PathVariable Long id) {
+        InternshipApplication application = internshipApplicationService.approveApplicant(id);
+        InternshipRegistration registration = internshipRegistrationService.createInternshipRegistration(
+                application.getStudent(),
+                application.getAnnouncement().getCompany());
+
+        application.setInternshipRegistration(registration);
+        internshipApplicationRepository.save(application);
+
+        return registration;
     }
 
     public InternshipApplication disapproveApplicant(@PathVariable Long id) {

@@ -2,6 +2,7 @@ package com.ceng316.ceng316_oims_backend.InternshipApplication;
 
 import com.ceng316.ceng316_oims_backend.Announcements.Announcement;
 import com.ceng316.ceng316_oims_backend.Documents.Document;
+import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistration;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -33,6 +34,9 @@ public class InternshipApplication {
     @Enumerated(EnumType.STRING)
     private InternshipApplicationStatus status;
     private LocalDate applicationDate;
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "internship_registration_id", referencedColumnName = "internshipRegistrationId")
+    private InternshipRegistration internshipRegistration;
 
 
     public InternshipApplication(IztechUser student, Announcement announcement,

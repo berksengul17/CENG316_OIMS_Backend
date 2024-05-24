@@ -1,5 +1,7 @@
 package com.ceng316.ceng316_oims_backend.InternshipApplication;
 
+import com.ceng316.ceng316_oims_backend.Announcements.Announcement;
+import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -38,6 +40,6 @@ public interface InternshipApplicationRepository extends JpaRepository<Internshi
     Optional<List<InternshipApplication>> findByCompanyIdAndStatusUsingAnnouncement(
             @Param("companyId") Long companyId,
             @Param("status") InternshipApplicationStatus status);
-
+    InternshipApplication findByStudentAndAnnouncement(IztechUser student, Announcement announcement);
 
 }

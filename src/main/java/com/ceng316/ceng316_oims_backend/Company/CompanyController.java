@@ -1,6 +1,7 @@
 package com.ceng316.ceng316_oims_backend.Company;
 
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplication;
+import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistration;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUserService;
 import com.ceng316.ceng316_oims_backend.MailSender.MailSenderService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -118,7 +119,7 @@ public class CompanyController {
     }
 
     @PutMapping("/applicant/{id}/approve")
-    public InternshipApplication approveApplicant(@PathVariable Long id) {
+    public InternshipRegistration approveApplicant(@PathVariable Long id) {
         return companyService.approveApplicant(id);
     }
 

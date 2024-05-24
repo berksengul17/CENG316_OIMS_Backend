@@ -5,6 +5,10 @@ import com.ceng316.ceng316_oims_backend.Announcements.AnnouncementRepository;
 import com.ceng316.ceng316_oims_backend.Company.CompanyRepository;
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplication;
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicationService;
+import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistration;
+import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistrationRepository;
+import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistrationService;
+import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistrationStatus;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUserRepository;
 import com.ceng316.ceng316_oims_backend.IztechUser.Role;
@@ -32,16 +36,17 @@ public class StudentService {
 
     private final IztechUserRepository iztechUserRepository;
     private final AnnouncementRepository announcementRepository;
-    private final CompanyRepository companyRepository;
     private final InternshipApplicationService internshipApplicationService;
+    private final InternshipRegistrationRepository internshipRegistrationRepository;
 
     public List<IztechUser> getEligibleStudents() {
-        Optional<List<IztechUser>> students = iztechUserRepository.findByRole(Role.STUDENT);
-        return students.map(iztechUsers -> iztechUsers
-                .stream()
-                .filter(student -> student.getIsEligible() == 1)
-                .toList()).orElseGet(List::of);
+        List<InternshipRegistration> registrations = internshipRegistrationRepository.findAll();
 
+        return registrations.stream()
+                .filter(registration -> (registration.getStatus() == InternshipRegistrationStatus.ACCEPTED) &&
+                                            registration.getStudent().getIsEligible() == 1)
+                .map(InternshipRegistration::getStudent)
+                .toList();
     }
 
     public List<InternshipApplication> getAppliedInternships(Long studentId) {
@@ -61,7 +66,7 @@ public class StudentService {
 
         document.open();
 
-        PdfPTable table = new PdfPTable(6);
+        PdfPTable table = new PdfPTable(5);
         addTableHeader(table, font);
         addRows(table, eligibleStudents, font);
 
@@ -81,7 +86,7 @@ public class StudentService {
     }
 
     private void addTableHeader(PdfPTable table, Font font) {
-        Stream.of("ID", "Full Name", "E-mail", "Grade", "Contact Number", "Identity Number")
+        Stream.of("Full Name", "E-mail", "Grade", "Contact Number", "Identity Number")
                 .forEach(columnTitle -> {
                     PdfPCell header = new PdfPCell();
                     header.setBackgroundColor(BaseColor.LIGHT_GRAY);
@@ -93,7 +98,6 @@ public class StudentService {
 
     private void addRows(PdfPTable table, List<IztechUser> eligibleStudents, Font font) {
         for (IztechUser student : eligibleStudents) {
-            table.addCell(new Phrase(String.valueOf(student.getId()), font));
             table.addCell(new Phrase(student.getFullName(), font));
             table.addCell(new Phrase(student.getEmail(), font));
             table.addCell(new Phrase(student.getGrade(), font));
