@@ -62,9 +62,9 @@ public class AnnouncementController {
     public ResponseEntity<List<Announcement>> getPendingAnnouncements() {
         return ResponseEntity.ok(announcementService.getPendingAnnouncements());
     }
-    @GetMapping("/approved")
-    public ResponseEntity<List<Announcement>> getApprovedAnnouncements() {
-        return ResponseEntity.ok(announcementService.getApprovedAnnouncements());
+    @GetMapping("/approved/{id}")
+    public ResponseEntity<List<Announcement>> getApprovedAnnouncements(@PathVariable Long id) {
+        return ResponseEntity.ok(announcementService.getApprovedAnnouncements(id));
     }
 
     @GetMapping("/company/{id}")

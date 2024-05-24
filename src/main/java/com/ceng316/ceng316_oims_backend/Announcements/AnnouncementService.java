@@ -6,6 +6,8 @@ import com.ceng316.ceng316_oims_backend.Documents.Document;
 import com.ceng316.ceng316_oims_backend.Documents.DocumentRepository;
 import com.ceng316.ceng316_oims_backend.Documents.DocumentStatus;
 import com.ceng316.ceng316_oims_backend.Documents.DocumentType;
+import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplication;
+import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicationService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -14,8 +16,10 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -23,6 +27,7 @@ public class AnnouncementService {
     private final AnnouncementRepository announcementRepository;
     private final DocumentRepository documentRepository;
     private final CompanyRepository companyRepository;
+    private final InternshipApplicationService internshipApplicationService;
 
     @Transactional
     public Announcement createAnnouncement(String title, MultipartFile file,
@@ -84,12 +89,20 @@ public class AnnouncementService {
         return announcementRepository.findByDocumentStatus(DocumentStatus.PENDING);
     }
 
-    public List<Announcement> getApprovedAnnouncements() {
-        return announcementRepository.findByDocumentStatus(DocumentStatus.APPROVED)
+    public List<Announcement> getApprovedAnnouncements(Long id) {
+        List<InternshipApplication> internshipApplications = internshipApplicationService.getApplicationsByStudentId(id);
+        List<Announcement> appliedAnnouncements = internshipApplications.stream().map(InternshipApplication::getAnnouncement).toList();
+
+        List <Announcement> announcements = announcementRepository.findByDocumentStatus(DocumentStatus.APPROVED)
                 .stream()
                 .filter(announcement -> announcement.getDeadline().isAfter(LocalDate.now()) ||
-                                        announcement.getDeadline().isEqual(LocalDate.now()))
-                .toList();
+                        announcement.getDeadline().isEqual(LocalDate.now()) )
+                .collect(Collectors.toCollection(ArrayList::new));
+
+        if (appliedAnnouncements != null) {
+            announcements.removeAll(appliedAnnouncements);
+        }
+        return announcements;
     }
 
     public List<Announcement> getAnnouncementsForCompany(Long id) {
