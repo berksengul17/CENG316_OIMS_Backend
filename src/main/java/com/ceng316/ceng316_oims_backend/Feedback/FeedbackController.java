@@ -82,7 +82,7 @@ public class FeedbackController {
     }
     @PutMapping("announcement/hide/{id}")
     public void hideAnnouncementFeedback(@PathVariable Long id) {
-        feedbackService.hideIztechUserFeedback(id);
+        feedbackService.hideAnnouncementFeedback(id);
     }
 
 }

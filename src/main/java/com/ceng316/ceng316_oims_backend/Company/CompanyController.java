@@ -91,8 +91,8 @@ public class CompanyController {
         }
     }
 
-    @PutMapping("changeInformation/{id}")
-    public ResponseEntity<?> updateCompanyMail(@PathVariable String email, @PathVariable String name, @PathVariable Long companyId) {
+    @PutMapping("changeInformation/{companyId}")
+    public ResponseEntity<?> updateCompanyMail(@PathVariable Long companyId, @RequestParam String email, @RequestParam String name) {
         try {
             Company company = companyService.updateCompanyNameAndMail(email, name, companyId);
             return ResponseEntity.ok(company);
