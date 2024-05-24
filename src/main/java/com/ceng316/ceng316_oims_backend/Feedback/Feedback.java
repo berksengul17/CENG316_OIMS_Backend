@@ -17,8 +17,6 @@ public class Feedback {
     protected Integer isSeen = 0;
     @Transient
     protected FeedbackType feedbackType;
-    @Transient
-    protected String topic;
 
     public Feedback(String content,FeedbackType feedbackType) {
         this.content = content;

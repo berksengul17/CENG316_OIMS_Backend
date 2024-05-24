@@ -118,9 +118,9 @@ public class CompanyService {
 
         if (!company.getEmail().equals(companyMail) && isEmailTaken) {
             throw new IllegalArgumentException("Email is already taken");
-        } else if(isNameTaken) {
+        } else if(!company.getCompanyName().equals(name)  && isNameTaken) {
             throw new IllegalArgumentException("Name is already taken");
-        }else if (!isValidEmail(company.getEmail())) {
+        } else if (!isValidEmail(company.getEmail())) {
             throw new IllegalArgumentException("Invalid email address");
         } else if (company.getCompanyName().length() > 30 || company.getCompanyName().length() < 2) {
             throw new IllegalArgumentException("Company name should be between 2 and 30 characters");
