@@ -61,10 +61,10 @@ public class FeedbackController {
         }
     }
 
-    @GetMapping("/announcement/{announcementId}")
-    public ResponseEntity<?> getAnnouncementFeedback(@PathVariable Long announcementId) {
+    @GetMapping("/announcement/{companyId}")
+    public ResponseEntity<?> getAnnouncementFeedback(@PathVariable Long companyId) {
         try {
-            return ResponseEntity.ok(feedbackService.getAnnouncementFeedback(announcementId));
+            return ResponseEntity.ok(feedbackService.getAnnouncementFeedback(companyId));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(e.getMessage());

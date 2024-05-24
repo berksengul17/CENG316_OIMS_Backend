@@ -93,7 +93,7 @@ public class AnnouncementService {
     }
 
     public List<Announcement> getAnnouncementsForCompany(Long id) {
-        return announcementRepository.findByCompanyId(id);
+        return announcementRepository.findAllByCompanyId(id).orElseThrow(() -> new IllegalArgumentException("Announcement not found"));
     }
 
     private String isValidAnnouncement(String title, MultipartFile file, LocalDate deadline) {

@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AnnouncementRepository extends JpaRepository<Announcement, Long> {
@@ -20,7 +21,8 @@ public interface AnnouncementRepository extends JpaRepository<Announcement, Long
 //    List<Announcement> findByCompanyIdAndDocumentStatus(Long companyId, DocumentStatus status);
 
     @Transactional
-    List<Announcement> findByCompanyId(Long companyId);
+    Optional<List<Announcement>> findAllByCompanyId(Long companyId);
+    Optional<Announcement> findByCompanyId(Long companyId);
 }
 
 

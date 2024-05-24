@@ -35,8 +35,8 @@ public class FeedbackService {
         return announcementFeedbackRepository.save(new AnnouncementFeedback(content, announcement));
     }
 
-    public List<AnnouncementFeedback> getAnnouncementFeedback(Long announcementId) {
-        Announcement announcement = announcementRepository.findById(announcementId)
+    public List<AnnouncementFeedback> getAnnouncementFeedback(Long companyId) {
+        Announcement announcement = announcementRepository.findByCompanyId(companyId)
                 .orElseThrow(() -> new IllegalArgumentException("Announcement not found"));
 
         return announcementFeedbackRepository.findAllByAnnouncementAndIsSeen(announcement, 0);
@@ -70,21 +70,21 @@ public class FeedbackService {
 
     public void hideIztechUserFeedback(Long id) {
         IztechUserFeedback feedback = iztechUserFeedbackRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("User not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Feedback not found"));
         feedback.setIsSeen(1);
         iztechUserFeedbackRepository.save(feedback);
 
     }
     public void hideCompanyFeedback(Long id) {
         CompanyFeedback feedback = companyFeedbackRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Company not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Feedback not found"));
         feedback.setIsSeen(1);
         companyFeedbackRepository.save(feedback);
 
     }
     public void hideAnnouncementFeedback(Long id) {
         AnnouncementFeedback feedback = announcementFeedbackRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Announcement not found"));
+                .orElseThrow(() -> new IllegalArgumentException("Feedback not found"));
         feedback.setIsSeen(1);
         announcementFeedbackRepository.save(feedback);
 
