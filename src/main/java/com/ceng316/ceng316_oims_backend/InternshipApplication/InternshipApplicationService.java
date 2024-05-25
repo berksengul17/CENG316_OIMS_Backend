@@ -72,8 +72,8 @@ public class InternshipApplicationService {
         application.setApplicationForm(form);
         internshipRegistrationRepository.save(application);
     }
-
-    public Map<String,Document> getApplicationForm(Long companyId, String studentEmail) {
+    @Transactional
+    public Map<String,Document> getApplicationForm(Long companyId, String studentEmail, Long internshipRegistrationId) {
         IztechUser student = iztechUserRepository.findByEmail(studentEmail)
                 .orElseThrow(() -> new IllegalArgumentException("Student with email " +
                         studentEmail + " does not exist."));
@@ -82,7 +82,7 @@ public class InternshipApplicationService {
                         companyId + " does not exist."));
 
         InternshipRegistration application = internshipRegistrationRepository
-                                                .findByStudentAndCompany(student, company);
+                                                .findByStudentAndCompanyAndInternshipRegistrationId(student, company, internshipRegistrationId);
 
         return new HashMap<>(Map.of(student.getFullName() + " Application Form",
                                     application.getApplicationForm()));
