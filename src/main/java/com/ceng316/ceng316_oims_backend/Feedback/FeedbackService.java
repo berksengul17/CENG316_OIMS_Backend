@@ -16,6 +16,7 @@ import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -38,10 +39,17 @@ public class FeedbackService {
 
     @Transactional
     public List<AnnouncementFeedback> getAnnouncementFeedback(Long companyId) {
-        Announcement announcement = announcementRepository.findByCompanyId(companyId)
-                .orElseThrow(() -> new IllegalArgumentException("Announcement not found"));
+        List<Announcement> announcements = announcementRepository.findAllByCompanyId(companyId)
+                .orElseThrow(() -> new IllegalArgumentException("No announcement related with the company"));
 
-        return announcementFeedbackRepository.findAllByAnnouncementAndIsSeen(announcement, 0);
+        List<AnnouncementFeedback> feedbackList = new ArrayList<>();
+        for (Announcement announcement : announcements) {
+            List<AnnouncementFeedback> announcementFeedback =
+                    announcementFeedbackRepository.findAllByAnnouncementAndIsSeen(announcement, 0);
+            feedbackList.addAll(announcementFeedback);
+        }
+
+        return feedbackList;
     }
 
     public CompanyFeedback addCompanyFeedback(Long companyId, String content){

@@ -62,7 +62,6 @@ public class MailSenderService {
         return message;
     }
 
-
     private String getAppUrl(HttpServletRequest request) {
         return "https://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath();
     }

@@ -39,9 +39,9 @@ public class SecurityController {
                 case "invalidToken":
                     message = "Invalid token.";
             }
-            return new RedirectView("https://oims-api.onrender.com:443/company/resetpassword");
+            return new RedirectView("https://oims-om4o.onrender.com:443/company/resetpassword");
         } else {
-            return new RedirectView("https://oims-api.onrender.com:443/company/setnewpassword?token=" + token);
+            return new RedirectView("https://oims-om4o.onrender.com:443/company/setnewpassword?token=" + token);
         }
     }
 

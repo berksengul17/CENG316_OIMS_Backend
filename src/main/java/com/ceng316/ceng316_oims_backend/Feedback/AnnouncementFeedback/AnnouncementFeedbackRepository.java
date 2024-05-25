@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface AnnouncementFeedbackRepository extends JpaRepository<AnnouncementFeedback, Long> {
     List<AnnouncementFeedback> findAllByAnnouncementAndIsSeen(Announcement announcement, int isSeen);
+
 }
