@@ -20,7 +20,7 @@ public class IztechUserFeedback extends Feedback {
     private IztechUser iztechUser;
 
     public IztechUserFeedback(String content, IztechUser iztechUser) {
-        super(content, FeedbackType.IZTECH_USER);
+        super(content);
         this.iztechUser = iztechUser;
     }
 }

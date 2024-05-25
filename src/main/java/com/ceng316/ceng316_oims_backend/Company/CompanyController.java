@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -37,15 +38,15 @@ public class CompanyController {
     public ResponseEntity<?> login(@RequestBody Company request) {
         try {
             Company loggedInCompany = companyService.login(request);
-            if(loggedInCompany != null) {
+            if (loggedInCompany != null) {
                 return ResponseEntity.ok(loggedInCompany);
             } else {
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                        .body("Email or password is wrong");
+                        .body(Collections.singletonMap("error", "Email or password is wrong"));
             }
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(e.getMessage());
+                    .body(Collections.singletonMap("error", e.getMessage()));
         }
     }
 

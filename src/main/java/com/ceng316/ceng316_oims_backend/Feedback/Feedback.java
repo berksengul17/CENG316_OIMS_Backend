@@ -5,6 +5,11 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+
 @MappedSuperclass
 @Getter
 @Setter
@@ -15,11 +20,11 @@ public class Feedback {
     protected Long id;
     protected String content;
     protected Integer isSeen = 0;
-    @Transient
-    protected FeedbackType feedbackType;
+    private String feedbackDate;
 
-    public Feedback(String content,FeedbackType feedbackType) {
+    public Feedback(String content) {
         this.content = content;
-        this.feedbackType = feedbackType;
+        this.feedbackDate = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss")
+                .format(LocalDateTime.now());
     }
 }

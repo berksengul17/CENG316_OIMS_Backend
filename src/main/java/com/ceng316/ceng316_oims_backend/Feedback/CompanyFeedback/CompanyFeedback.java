@@ -20,7 +20,7 @@ public class CompanyFeedback extends Feedback {
     private Company company;
 
     public CompanyFeedback(String content, Company company) {
-        super(content, FeedbackType.COMPANY);
+        super(content);
         this.company = company;
     }
 }
