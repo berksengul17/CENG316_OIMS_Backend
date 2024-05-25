@@ -2,6 +2,7 @@ package com.ceng316.ceng316_oims_backend.SPC;
 
 import com.ceng316.ceng316_oims_backend.Documents.Document;
 import com.ceng316.ceng316_oims_backend.Documents.DocumentService;
+import com.ceng316.ceng316_oims_backend.Documents.DocumentStatus;
 import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistration;
 import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistrationRepository;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
@@ -41,7 +42,7 @@ public class SPCService {
 
         List<InternshipRegistration> allRegistrations = internshipRegistrationRepository.findAll();
         for (InternshipRegistration registration : allRegistrations) {
-            if (registration.getApplicationForm() != null) {
+            if (registration.getApplicationForm() != null && registration.getApplicationForm().getStatus() == DocumentStatus.PENDING) {
                 registrationsWithFOrms.add(registration);
             }
         }
