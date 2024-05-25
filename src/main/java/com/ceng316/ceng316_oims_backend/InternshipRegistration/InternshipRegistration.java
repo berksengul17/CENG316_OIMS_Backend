@@ -18,7 +18,7 @@ public class InternshipRegistration {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long internshipRegistrationId;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name = "student_id", referencedColumnName = "id")
     private IztechUser student;
     @ManyToOne
@@ -30,10 +30,17 @@ public class InternshipRegistration {
     @OneToOne
     @JoinColumn(name = "ssi_id", referencedColumnName = "documentId")
     private Document ssiCertificate;
+    @Enumerated(EnumType.STRING)
+    private InternshipRegistrationStatus status = InternshipRegistrationStatus.PENDING;
 
     public InternshipRegistration(IztechUser student, Company company, Document applicationForm) {
         this.student = student;
         this.company = company;
         this.applicationForm = applicationForm;
+    }
+
+    public InternshipRegistration(IztechUser student, Company company) {
+        this.student = student;
+        this.company = company;
     }
 }

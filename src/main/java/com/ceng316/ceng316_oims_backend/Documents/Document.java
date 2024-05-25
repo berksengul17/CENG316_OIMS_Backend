@@ -1,6 +1,5 @@
 package com.ceng316.ceng316_oims_backend.Documents;
 
-import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;

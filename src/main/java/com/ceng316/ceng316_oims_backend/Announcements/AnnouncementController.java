@@ -62,13 +62,18 @@ public class AnnouncementController {
     public ResponseEntity<List<Announcement>> getPendingAnnouncements() {
         return ResponseEntity.ok(announcementService.getPendingAnnouncements());
     }
-    @GetMapping("/approved")
-    public ResponseEntity<List<Announcement>> getApprovedAnnouncements() {
-        return ResponseEntity.ok(announcementService.getApprovedAnnouncements());
+    @GetMapping("/approved/{id}")
+    public ResponseEntity<List<Announcement>> getApprovedAnnouncements(@PathVariable Long id) {
+        return ResponseEntity.ok(announcementService.getApprovedAnnouncements(id));
     }
 
     @GetMapping("/company/{id}")
     public ResponseEntity<List<Announcement>> getAnnouncementsForCompany(@PathVariable Long id) {
         return ResponseEntity.ok(announcementService.getAnnouncementsForCompany(id));
     }
+    @PutMapping("/delete/{id}")
+    public void deleteAnnouncement(@PathVariable Long id) {
+        announcementService.deleteAnnouncement(id);
+    }
+
 }

@@ -28,12 +28,8 @@ public class MailSenderService {
 
     public void sendInternshipApplicationEmail(InternshipApplication application) {
         IztechUser sender = application.getStudent();
-        Company receiver;
-        if (application.getCompany() == null) {
-            receiver = application.getAnnouncement().getCompany();
-        } else {
-            receiver = application.getCompany();
-        }
+        Company receiver = application.getAnnouncement().getCompany();
+
         Document applicationLetter = application.getApplicationLetter();
         mailSender.send(constructInternshipApplicationEmail(sender, receiver, applicationLetter));
     }

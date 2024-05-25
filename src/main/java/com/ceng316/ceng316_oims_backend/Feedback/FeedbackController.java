@@ -61,13 +61,28 @@ public class FeedbackController {
         }
     }
 
-    @GetMapping("/announcement/{announcementId}")
-    public ResponseEntity<?> getAnnouncementFeedback(@PathVariable Long announcementId) {
+    @GetMapping("/announcement/{companyId}")
+    public ResponseEntity<?> getAnnouncementFeedback(@PathVariable Long companyId) {
         try {
-            return ResponseEntity.ok(feedbackService.getAnnouncementFeedback(announcementId));
+            return ResponseEntity.ok(feedbackService.getAnnouncementFeedback(companyId));
         } catch (IllegalArgumentException e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(e.getMessage());
         }
     }
+
+    @PutMapping("iztech-user/hide/{id}")
+    public void hideIztechUserFeedback(@PathVariable Long id) {
+        feedbackService.hideIztechUserFeedback(id);
+    }
+
+    @PutMapping("company/hide/{id}")
+    public void hideCompanyFeedback(@PathVariable Long id) {
+        feedbackService.hideCompanyFeedback(id);
+    }
+    @PutMapping("announcement/hide/{id}")
+    public void hideAnnouncementFeedback(@PathVariable Long id) {
+        feedbackService.hideAnnouncementFeedback(id);
+    }
+
 }

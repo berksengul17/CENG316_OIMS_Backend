@@ -2,7 +2,6 @@ package com.ceng316.ceng316_oims_backend.InternshipApplication;
 
 import com.ceng316.ceng316_oims_backend.Documents.Document;
 import lombok.AllArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;

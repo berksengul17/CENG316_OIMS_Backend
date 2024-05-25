@@ -1,6 +1,5 @@
 package com.ceng316.ceng316_oims_backend.Announcements;
 
-import com.ceng316.ceng316_oims_backend.Documents.Document;
 import com.ceng316.ceng316_oims_backend.Documents.DocumentStatus;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -22,7 +21,8 @@ public interface AnnouncementRepository extends JpaRepository<Announcement, Long
 //    List<Announcement> findByCompanyIdAndDocumentStatus(Long companyId, DocumentStatus status);
 
     @Transactional
-    List<Announcement> findByCompanyId(Long companyId);
+    Optional<List<Announcement>> findAllByCompanyId(Long companyId);
+    Optional<Announcement> findByCompanyId(Long companyId);
 }
 
 

@@ -38,9 +38,6 @@ public class Company {
     @JsonIgnore
     @ToString.Exclude
     private List<CompanyFeedback> feedbacks;
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
-    @JsonIgnore
-    private List<InternshipApplication> internshipApplications;
 
     public Company(String email, String password, String companyName) {
         this.email = email;

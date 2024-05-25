@@ -13,10 +13,10 @@ import com.ceng316.ceng316_oims_backend.IztechUser.IztechUserRepository;
 import com.ceng316.ceng316_oims_backend.MailSender.MailSenderService;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -46,20 +46,12 @@ public class InternshipApplicationService {
 
         InternshipApplication application = new InternshipApplication(student, announcement, applicationLetter);
 
-        internshipApplicationRepository.save(application);
-        mailSenderService.sendInternshipApplicationEmail(application);
-
-        return application;
-    }
-
-    public InternshipApplication createInternshipApplication(IztechUser student, Company company) throws IOException {
-        Document applicationLetter =
-                documentService.prepareDocument(student, DocumentType.APPLICATION_LETTER_TEMPLATE);
-
-        InternshipApplication application = new InternshipApplication(student, company, applicationLetter);
-
-        internshipApplicationRepository.save(application);
-        mailSenderService.sendInternshipApplicationEmail(application);
+        try {
+            mailSenderService.sendInternshipApplicationEmail(application);
+            internshipApplicationRepository.save(application);
+        } catch (Exception e) {
+            throw new IllegalStateException("Failed to send email.");
+        }
 
         return application;
     }
@@ -96,13 +88,49 @@ public class InternshipApplicationService {
                                     application.getApplicationForm()));
     }
 
-    public List<IztechUser> getPendingInternsByCompany(Long companyId) {
-        List<InternshipApplication> applications = new ArrayList<>();
-        applications.addAll(internshipApplicationRepository.findByCompanyId(companyId));
-        applications.addAll(internshipApplicationRepository.findByCompanyIdUsingAnnouncement(companyId));
+    // TODO bu ya silince ya da düzeltilcek
+//    public List<IztechUser> getInternshipApplicationsByCompany(Long companyId) {
+//        List<InternshipApplication> applications = new ArrayList<>();
+//        applications.addAll(internshipApplicationRepository.findByCompanyIdUsingAnnouncement(companyId));
+//
+//        return applications.stream()
+//                .filter(application -> application.getStatus() == InternshipApplicationStatus.ACCEPTED)
+//                .map(InternshipApplication::getStudent).toList();
+//    }
+    @Transactional
+    public List<InternshipApplication> getApplicationsByCompanyId(Long companyId) {
+        if (!companyRepository.existsById(companyId)) {
+            throw new IllegalStateException("Company with id " + companyId + " does not exist.");
+        }
 
-        return applications.stream()
-                .filter(application -> application.getStatus() == InternshipApplicationStatus.ACCEPTED)
-                .map(InternshipApplication::getStudent).toList();
+        return internshipApplicationRepository.findByCompanyIdAndStatusUsingAnnouncement(companyId, InternshipApplicationStatus.PENDING)
+                .orElseThrow(()-> new IllegalArgumentException("Application not found by company Id"));
+    }
+
+    public InternshipApplication approveApplicant(Long id) {
+        InternshipApplication internshipApplication = internshipApplicationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Internship Application not found while approving applicant"));
+
+        internshipApplication.setStatus(InternshipApplicationStatus.ACCEPTED);
+        return internshipApplicationRepository.save(internshipApplication);
+    }
+
+    public InternshipApplication disapproveApplicant(Long id) {
+        InternshipApplication internshipApplication = internshipApplicationRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Internship Application not found while approving applicant"));
+
+        internshipApplication.setStatus(InternshipApplicationStatus.REJECTED);
+        return internshipApplicationRepository.save(internshipApplication);
+    }
+
+    public void rejectAcceptedCompanyApplications(Long studentId, Long announcementId) {
+        List<InternshipApplication> applications = internshipApplicationRepository.findAllByStudentId(studentId);
+
+        for (InternshipApplication application : applications) {
+            if (!application.getAnnouncement().getAnnouncementId().equals(announcementId)) {
+                application.setStatus(InternshipApplicationStatus.REJECTED);
+                internshipApplicationRepository.save(application);
+            }
+        }
     }
 }

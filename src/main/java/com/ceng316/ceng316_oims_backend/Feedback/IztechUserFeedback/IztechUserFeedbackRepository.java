@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface IztechUserFeedbackRepository extends JpaRepository<IztechUserFeedback, Long> {
-    List<IztechUserFeedback> findAllByIztechUser(IztechUser iztechUser);
+    List<IztechUserFeedback> findAllByIztechUserAndIsSeen(IztechUser iztechUser, int isSeen);
 }

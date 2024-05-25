@@ -2,6 +2,7 @@ package com.ceng316.ceng316_oims_backend.Feedback.AnnouncementFeedback;
 
 import com.ceng316.ceng316_oims_backend.Announcements.Announcement;
 import com.ceng316.ceng316_oims_backend.Feedback.Feedback;
+import com.ceng316.ceng316_oims_backend.Feedback.FeedbackType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -19,7 +20,7 @@ public class AnnouncementFeedback extends Feedback {
     private Announcement announcement;
 
     public AnnouncementFeedback(String content, Announcement announcement) {
-        super(content);
+        super(content, FeedbackType.ANNOUNCEMENT);
         this.announcement = announcement;
     }
 }

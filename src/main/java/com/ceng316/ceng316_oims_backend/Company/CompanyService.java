@@ -3,6 +3,7 @@ package com.ceng316.ceng316_oims_backend.Company;
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplication;
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicationRepository;
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicationService;
+import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistration;
 import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistrationService;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import com.ceng316.ceng316_oims_backend.PasswordResetToken.PasswordResetToken;
@@ -10,8 +11,10 @@ import com.ceng316.ceng316_oims_backend.PasswordResetToken.PasswordResetTokenRep
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.PathVariable;
 
-import java.util.*;
+import java.util.List;
+import java.util.Optional;
 import java.util.regex.Pattern;
 
 @Service
@@ -20,14 +23,18 @@ public class CompanyService {
 
     private final CompanyRepository companyRepository;
     private final PasswordResetTokenRepository passwordResetTokenRepository;
-    private final InternshipApplicationService internshipApplicationService;
     private final InternshipRegistrationService internshipRegistrationService;
+    private final InternshipApplicationService internshipApplicationService;
+    private final InternshipApplicationRepository internshipApplicationRepository;
 
     public Company signUp(Company company) {
         boolean isEmailTaken = companyRepository.findByEmail(company.getEmail()).isPresent();
+        boolean isNameTaken = companyRepository.findByCompanyName(company.getCompanyName()).isPresent();
 
         if (isEmailTaken) {
             throw new IllegalArgumentException("Email is already taken");
+        } else if (isNameTaken) {
+            throw new IllegalArgumentException("Name is already taken");
         } else if (!isValidEmail(company.getEmail())) {
             throw new IllegalArgumentException("Invalid email address");
         } else if (company.getCompanyName().length() > 30 || company.getCompanyName().length() < 2) {
@@ -44,7 +51,7 @@ public class CompanyService {
 
         if (company.getPassword().equals(companyCredentials.getPassword())) {
             return new Company(company.getId(), company.getEmail(), company.getCompanyName(), company.getRegistrationStatus());
-            }
+        }
         return null;
     }
 
@@ -56,7 +63,7 @@ public class CompanyService {
         return companyRepository.save(company);
     }
 
-    public Company disapproveCompany (Long id) {
+    public Company disapproveCompany(Long id) {
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Company not found"));
 
@@ -64,7 +71,7 @@ public class CompanyService {
         return companyRepository.save(company);
     }
 
-    public void banCompany (Long id) {
+    public void banCompany(Long id) {
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Company not found"));
         companyRepository.delete(company);
@@ -91,10 +98,12 @@ public class CompanyService {
 
         passwordResetTokenRepository.save(new PasswordResetToken(token, company));
     }
+
     public void changeCompanyPassword(Company company, String password) {
         company.setPassword(password);
         companyRepository.save(company);
     }
+
     public Optional<Company> getCompanyByPasswordResetToken(String token) {
         return Optional.ofNullable(passwordResetTokenRepository.findByToken(token).getCompany());
     }
@@ -103,25 +112,35 @@ public class CompanyService {
         return companyRepository.findByRegistrationStatus(RegistrationStatus.PENDING);
     }
 
-    //TODO buraya çok detaylı bakmadım inceleyelim
+    public List<Company> getApprovedCompanies() {
+        return companyRepository.findByRegistrationStatus(RegistrationStatus.APPROVED);
+    }
+
     @Transactional
-    public Map<String, List<IztechUser>> getInterns(Long companyId) {
-        Map<String, List<IztechUser>> internsMap = new HashMap<>();
+    public List<InternshipRegistration> getInterns(Long companyId) {
+        return internshipRegistrationService.getInternsByCompany(companyId);
+    }
 
-        // Create modifiable copies of the lists
-        List<IztechUser> interns = new ArrayList<>(internshipRegistrationService.getInternsByCompany(companyId));
-        List<IztechUser> pendingInterns = new ArrayList<>(internshipApplicationService.getPendingInternsByCompany(companyId));
+    public Company updateCompanyNameAndMail(String companyMail, String name, Long companyId) {
+        Company company = companyRepository.findById(companyId)
+                .orElseThrow(() -> new IllegalArgumentException("Company not found"));
 
-        // Convert interns list to a set for efficient look-up
-        Set<IztechUser> internsSet = new HashSet<>(interns);
+        boolean isEmailTaken = companyRepository.findByEmail(companyMail).isPresent();
+        boolean isNameTaken = companyRepository.findByCompanyName(name).isPresent();
 
-        // Remove duplicates from pendingInterns
-        pendingInterns.removeAll(internsSet);
+        if (!company.getEmail().equals(companyMail) && isEmailTaken) {
+            throw new IllegalArgumentException("Email is already taken");
+        } else if (!company.getCompanyName().equals(name) && isNameTaken) {
+            throw new IllegalArgumentException("Name is already taken");
+        } else if (!isValidEmail(company.getEmail())) {
+            throw new IllegalArgumentException("Invalid email address");
+        } else if (company.getCompanyName().length() > 30 || company.getCompanyName().length() < 2) {
+            throw new IllegalArgumentException("Company name should be between 2 and 30 characters");
+        }
 
-        internsMap.put("accepted", interns);
-        internsMap.put("pending", pendingInterns);
-
-        return internsMap;
+        company.setEmail(companyMail);
+        company.setCompanyName(name);
+        return companyRepository.save(company);
     }
 
     private boolean isValidEmail(String emailAddress) {
@@ -130,4 +149,24 @@ public class CompanyService {
                 .matches();
     }
 
+    @Transactional
+    public List<InternshipApplication> getCompanyApplications(Long companyId) {
+        return internshipApplicationService.getApplicationsByCompanyId(companyId);
+    }
+
+    public InternshipRegistration approveApplicant(@PathVariable Long id) {
+        InternshipApplication application = internshipApplicationService.approveApplicant(id);
+        InternshipRegistration registration = internshipRegistrationService.createInternshipRegistration(
+                application.getStudent(),
+                application.getAnnouncement().getCompany());
+
+        application.setInternshipRegistration(registration);
+        internshipApplicationRepository.save(application);
+
+        return registration;
+    }
+
+    public InternshipApplication disapproveApplicant(@PathVariable Long id) {
+        return internshipApplicationService.disapproveApplicant(id);
+    }
 }

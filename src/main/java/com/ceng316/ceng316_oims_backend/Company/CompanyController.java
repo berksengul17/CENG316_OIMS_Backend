@@ -1,7 +1,7 @@
 package com.ceng316.ceng316_oims_backend.Company;
 
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplication;
-import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
+import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistration;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUserService;
 import com.ceng316.ceng316_oims_backend.MailSender.MailSenderService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -57,14 +57,24 @@ public class CompanyController {
             throw new IllegalArgumentException("Company with email" + email + "is not found");
         }
         String token = UUID.randomUUID().toString();
-        companyService.createPasswordResetTokenForCompany(company, token);
-        mailSenderService.sendResetTokenEmail(request, token, company);
+        try {
+            mailSenderService.sendResetTokenEmail(request, token, company);
+            companyService.createPasswordResetTokenForCompany(company, token);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to send email.");
+        }
         return ResponseEntity.ok("You should receive a password reset email shortly");
     }
 
     @GetMapping("/list")
     public ResponseEntity<List<Company>> listCompanies() {
         return ResponseEntity.ok(companyService.getCompanies());
+    }
+
+    @GetMapping("/approvedList")
+    public ResponseEntity<List<Company>> listApprovedCompanies() {
+        return ResponseEntity.ok(companyService.getApprovedCompanies());
     }
 
     @GetMapping("/interns/{id}")
@@ -83,9 +93,42 @@ public class CompanyController {
             InternshipApplication internshipApplication = iztechUserService.updateStudentCompanyOwner(email, companyId);
             return ResponseEntity.ok(internshipApplication);
         } catch (Exception e)  {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Error: " + e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
     }
+
+    @PutMapping("/changeInformation/{companyId}")
+    public ResponseEntity<?> updateCompanyMail(@PathVariable Long companyId, @RequestParam String email, @RequestParam String name) {
+        try {
+            Company company = companyService.updateCompanyNameAndMail(email, name, companyId);
+            return ResponseEntity.ok(company);
+        } catch (Exception e)  {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
+
+    @GetMapping("/{companyId}/applied-internships")
+    public ResponseEntity<?> getCompanyApplicants(@PathVariable Long companyId) {
+        try {
+            List<InternshipApplication> appliedInternships = companyService.getCompanyApplications(companyId);
+            return ResponseEntity.ok(appliedInternships);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/applicant/{id}/approve")
+    public InternshipRegistration approveApplicant(@PathVariable Long id) {
+        return companyService.approveApplicant(id);
+    }
+
+    @PutMapping("/applicant/{id}/disapprove")
+    public InternshipApplication disapproveApplicant(@PathVariable Long id) {
+        return companyService.disapproveApplicant(id);
+    }
+
+
 }
 
 

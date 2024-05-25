@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import java.util.List;
 
 public interface AnnouncementFeedbackRepository extends JpaRepository<AnnouncementFeedback, Long> {
-    List<AnnouncementFeedback> findAllByAnnouncement(Announcement announcement);
+    List<AnnouncementFeedback> findAllByAnnouncementAndIsSeen(Announcement announcement, int isSeen);
 }
