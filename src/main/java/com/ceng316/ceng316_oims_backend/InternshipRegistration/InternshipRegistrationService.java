@@ -41,8 +41,8 @@ public class InternshipRegistrationService {
         Announcement announcement = announcementRepository.findById(announcementId)
                 .orElseThrow(() -> new IllegalArgumentException("Announcement not found"));
 
-        InternshipRegistration registration = internshipRegistrationRepository
-                                                .findByStudentAndCompany(student, announcement.getCompany());
+        InternshipRegistration registration = internshipApplicationRepository
+                .findByStudentAndAnnouncement(student, announcement).getInternshipRegistration();
 
         // prepare document
         registration.setApplicationForm(documentService

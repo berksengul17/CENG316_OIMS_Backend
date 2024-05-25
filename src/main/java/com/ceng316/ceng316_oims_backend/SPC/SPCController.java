@@ -17,8 +17,10 @@ public class SPCController {
     private final SPCService spcService;
 
     @PutMapping("/document/{id}/approve")
-    public Document approveDocument(@PathVariable Long id) {
-        return spcService.approveDocument(id);
+    public Document approveDocument(@PathVariable Long id,
+                                    @RequestParam String studentEmail,
+                                    @RequestParam int isEligible) {
+        return spcService.approveDocument(id, studentEmail, isEligible);
     }
     @PutMapping("/document/{id}/disapprove")
     public Document disapproveDocument(@PathVariable Long id) {

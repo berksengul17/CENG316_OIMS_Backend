@@ -96,5 +96,6 @@ public class FeedbackService {
         feedback.setIsSeen(1);
         announcementFeedbackRepository.save(feedback);
 
+
     }
 }
