@@ -18,7 +18,8 @@ public class PasswordResetToken {
 
     private String token;
 
-    @OneToOne(targetEntity = Company.class, fetch = FetchType.EAGER)
+    @OneToOne(targetEntity = Company.class, fetch = FetchType.EAGER,
+            cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(nullable = false, name = "company_id", referencedColumnName = "id")
     private Company company;
 

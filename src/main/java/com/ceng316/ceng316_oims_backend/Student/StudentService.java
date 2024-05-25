@@ -21,10 +21,12 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -60,8 +62,22 @@ public class StudentService {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         PdfWriter.getInstance(document, byteArrayOutputStream);
 
-        BaseFont baseFont = BaseFont.createFont("src/main/resources/static/OpenSans-Regular.ttf",
-                                                BaseFont.IDENTITY_H, BaseFont.EMBEDDED);
+        ClassPathResource resource = new ClassPathResource("static/OpenSans-Regular.ttf");
+        BaseFont baseFont = null;
+        try (InputStream inputStream = resource.getInputStream()) {
+            baseFont = BaseFont.createFont(
+                    "OpenSans-Regular.ttf",
+                    BaseFont.IDENTITY_H,
+                    BaseFont.EMBEDDED,
+                    false,
+                    inputStream.readAllBytes(),
+                    null
+            );
+            // Use the baseFont as needed
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        
         Font font = new Font(baseFont, 12);
 
         document.open();
