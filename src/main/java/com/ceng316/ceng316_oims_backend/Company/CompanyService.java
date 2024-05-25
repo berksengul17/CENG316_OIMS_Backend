@@ -7,7 +7,6 @@ import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistr
 import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistrationRepository;
 import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistrationService;
 import com.ceng316.ceng316_oims_backend.InternshipRegistration.InternshipRegistrationStatus;
-import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import com.ceng316.ceng316_oims_backend.PasswordResetToken.PasswordResetToken;
 import com.ceng316.ceng316_oims_backend.PasswordResetToken.PasswordResetTokenRepository;
 import lombok.AllArgsConstructor;
@@ -59,7 +58,7 @@ public class CompanyService {
 
         if (company.getPassword().equals(companyCredentials.getPassword())) {
             if (company.getRegistrationStatus() == RegistrationStatus.DISAPPROVED) {
-                throw new IllegalArgumentException("Your registration has been disapproved");
+                throw new IllegalArgumentException("Your registration has been disapproved.");
             }
             return new Company(company.getId(), company.getEmail(),
                     company.getCompanyName(), company.getRegistrationStatus());
@@ -86,6 +85,7 @@ public class CompanyService {
     public void banCompany(Long id) {
         Company company = companyRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("Company not found"));
+        passwordResetTokenRepository.deleteByCompany(company);
         companyRepository.delete(company);
 
     }
