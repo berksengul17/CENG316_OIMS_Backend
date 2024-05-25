@@ -4,11 +4,13 @@ import com.ceng316.ceng316_oims_backend.Announcements.Announcement;
 import com.ceng316.ceng316_oims_backend.Announcements.AnnouncementRepository;
 import com.ceng316.ceng316_oims_backend.Company.Company;
 import com.ceng316.ceng316_oims_backend.Company.CompanyRepository;
+import com.ceng316.ceng316_oims_backend.Company.RegistrationStatus;
 import com.ceng316.ceng316_oims_backend.Documents.Document;
 import com.ceng316.ceng316_oims_backend.Documents.DocumentService;
 import com.ceng316.ceng316_oims_backend.Documents.DocumentType;
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicationRepository;
 import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicationService;
+import com.ceng316.ceng316_oims_backend.InternshipApplication.InternshipApplicationStatus;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUser;
 import com.ceng316.ceng316_oims_backend.IztechUser.IztechUserRepository;
 import lombok.AllArgsConstructor;
@@ -29,8 +31,12 @@ public class InternshipRegistrationService {
     private final AnnouncementRepository announcementRepository;
     private final DocumentService documentService;
 
-    public InternshipRegistration createInternshipRegistration(IztechUser student, Company company) {
-        return internshipRegistrationRepository.save(new InternshipRegistration(student, company));
+    public InternshipRegistration createInternshipRegistration(IztechUser student,
+                                                               Company company,
+                                                               InternshipRegistrationStatus status) {
+        InternshipRegistration registration = new InternshipRegistration(student, company);
+        registration.setStatus(status);
+        return internshipRegistrationRepository.save(registration);
     }
 
     @Transactional

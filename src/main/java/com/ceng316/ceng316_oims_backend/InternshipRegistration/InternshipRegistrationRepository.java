@@ -16,4 +16,7 @@ public interface InternshipRegistrationRepository extends JpaRepository<Internsh
 
     List<InternshipRegistration> findAllByStudent(IztechUser student);
     InternshipRegistration findByStudent(IztechUser student);
+
+    @Transactional
+    InternshipRegistration findByStudentAndCompanyAndInternshipRegistrationId(IztechUser student, Company company, Long internshipRegistrationId);
 }

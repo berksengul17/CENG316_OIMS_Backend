@@ -20,7 +20,7 @@ public class AnnouncementFeedback extends Feedback {
     private Announcement announcement;
 
     public AnnouncementFeedback(String content, Announcement announcement) {
-        super(content, FeedbackType.ANNOUNCEMENT);
+        super(content);
         this.announcement = announcement;
     }
 }

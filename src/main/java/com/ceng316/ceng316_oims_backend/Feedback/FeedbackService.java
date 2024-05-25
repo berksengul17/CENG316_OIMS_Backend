@@ -41,13 +41,7 @@ public class FeedbackService {
         Announcement announcement = announcementRepository.findByCompanyId(companyId)
                 .orElseThrow(() -> new IllegalArgumentException("Announcement not found"));
 
-        List<AnnouncementFeedback> announcementFeedbackList =
-                announcementFeedbackRepository.findAllByAnnouncementAndIsSeen(announcement, 0);
-
-        announcementFeedbackList
-                .forEach(announcementFeedback -> announcementFeedback.setFeedbackType(FeedbackType.ANNOUNCEMENT));
-
-        return announcementFeedbackList;
+        return announcementFeedbackRepository.findAllByAnnouncementAndIsSeen(announcement, 0);
     }
 
     public CompanyFeedback addCompanyFeedback(Long companyId, String content){

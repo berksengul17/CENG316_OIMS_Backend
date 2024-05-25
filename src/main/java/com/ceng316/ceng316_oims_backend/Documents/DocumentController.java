@@ -18,12 +18,14 @@ public class DocumentController {
     private final DocumentService documentService;
     private final DocumentRepository documentRepository;
 
-    //TODO buna gerek olmayabilir
-    @GetMapping("/fillDocument")
-    public ResponseEntity<String> fillDocument(@RequestParam Long studentId, @RequestParam DocumentType documentType) {
+    @GetMapping("/fill-download")
+    public ResponseEntity<?> fillDocument(@RequestParam Long studentId, @RequestParam DocumentType documentType) {
         try {
-            documentService.prepareDocument(studentId, documentType);
-            return ResponseEntity.ok("Document is filled");
+            Document document = documentService.prepareDocument(studentId, documentType);
+            return ResponseEntity.ok()
+                    .contentType(MediaType.parseMediaType(document.getContentType()))
+                    .header("Content-Disposition", "attachment; filename=\"" + document.getType() + "\"")
+                    .body(document.getContent());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body(e.getMessage());

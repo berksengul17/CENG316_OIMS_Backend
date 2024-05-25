@@ -43,9 +43,10 @@ public class InternshipApplicationController {
 
     @PostMapping("/download-application-form")
     public ResponseEntity<?> downloadApplicationForm(@RequestParam Long companyId,
-                                                     @RequestParam String studentEmail) {
+                                                     @RequestParam String studentEmail,
+                                                     @RequestParam Long internshipRegistrationId) {
         try {
-            Map<String, Document> form = internshipApplicationService.getApplicationForm(companyId, studentEmail);
+            Map<String, Document> form = internshipApplicationService.getApplicationForm(companyId, studentEmail, internshipRegistrationId);
             String fileName = form.keySet().iterator().next();
             Document document = form.get(fileName);
             return ResponseEntity.ok()
